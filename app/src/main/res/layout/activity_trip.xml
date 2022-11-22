@@ -117,12 +117,16 @@
                             android:gravity="left"/>
                     </LinearLayout>
 
-                </LinearLayout>
+                    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/fl_map"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        tools:context=".view.view.TripActivity">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/map"/>
+                    </FrameLayout>
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/stop"

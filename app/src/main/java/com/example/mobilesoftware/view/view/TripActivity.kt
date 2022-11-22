@@ -2,16 +2,13 @@ package com.example.mobilesoftware.view.view
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.databinding.ActivityTripBinding
 import com.example.mobilesoftware.view.viewmodels.TripViewModel
-import com.google.android.material.snackbar.Snackbar
 
 class TripActivity : AppCompatActivity() {
     var myViewModel = TripViewModel()
@@ -34,6 +31,13 @@ class TripActivity : AppCompatActivity() {
 
         val title = intent.getStringExtra("title")
         myViewModel.init(title)
+
+        val manager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = manager.beginTransaction()
+
+        val map = MapsFragment()
+        transaction.add(R.id.fl_map, map);
+        transaction.commit();
 
         binding.backIcon.setOnClickListener { view ->
             // Do some work here
