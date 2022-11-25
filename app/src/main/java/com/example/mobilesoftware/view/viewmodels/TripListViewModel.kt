@@ -8,7 +8,9 @@ import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.view.model.Image
+import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.respository.ImageRepository
+import com.example.mobilesoftware.view.respository.TripRepository
 import com.example.mobilesoftware.view.respository.asDomainModel
 import com.example.mobilesoftware.view.respository.asDomainModels
 import kotlinx.coroutines.Dispatchers
@@ -23,18 +25,18 @@ import kotlinx.coroutines.withContext
  *
  * @param repository - data access is through the repository.
  */
-class ImageListViewModel(private val imgrepository: ImageRepository, private val applicationContext: Application) : ViewModel() {
+class TripListViewModel(private val triprepository: TripRepository, private val applicationContext: Application) : ViewModel() {
 
     // Receive the Flow of ImageEntity data from the repository, but transform to the LiveData of Images
     // that will be observed fom the view
-    val images: LiveData<List<Image>> = Transformations.map(imgrepository.images){
-        it.asDomainModels(applicationContext)
-    } as MutableLiveData<List<Image>>
+    val trips: LiveData<List<TripElement>> = Transformations.map(triprepository.trips){
+        it.asDomainModels()
+    } as MutableLiveData<List<TripElement>>
     /**
      * Retrieves a single Image object for the specified id
      */
-    fun getImage(id: Int) : LiveData<Image> = Transformations.map(imgrepository.getImage(id)){
-        it.asDomainModel(applicationContext)
+    fun getImage(id: Int) : LiveData<TripElement> = Transformations.map(triprepository.getTrip(id)){
+        it.asDomainModel()
     }
 
     /**
@@ -44,47 +46,44 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
      * suspending. Allowing the function to be directly consumable
      * from the view classes without declaring a coroutine scope in the view.
      */
-    fun insert(image: Image) = viewModelScope.launch {
-        imgrepository.insert(image)
+    fun insert(trip: TripElement) = viewModelScope.launch {
+        triprepository.insert(trip)
     }
 
     /**
      * Inserts an Image into the database providing property values of an Image object
      */
     fun insert(
-        image_uri: Uri,
-        title: String = "Default",
-        description: String? = null
+        title: String,
+        time: String
     ) = viewModelScope.launch {
-        imgrepository.insert(
-            image_uri = image_uri,
+        triprepository.insert(
             title = title,
-            description = description,
-            context = applicationContext)
+            time = time)
     }
 
     /**
      * Launching a new coroutine to UPDATE an Image object in a non-blocking way
      */
-    fun update(image: Image) = viewModelScope.launch {
-        imgrepository.update(image)
+    fun update(trip: TripElement) = viewModelScope.launch {
+        triprepository.update(trip)
     }
 
     /**
      * Launching a new coroutine to DELETE an Image object in a non-blocking way
      */
-    fun delete(image: Image) = viewModelScope.launch {
-        imgrepository.delete(image)
+    fun delete(trip: TripElement) = viewModelScope.launch {
+        triprepository.delete(trip)
     }
 
 }
 
 // Extends the ViewModelProvider.Factory allowing us to control the viewmodel creation
 // and provide the right parameters
-class ImageViewModelFactory(private val repository: ImageRepository,  private val applicationContext: Application) : ViewModelProvider.Factory {
+class TripListViewModelFactory(private val repository: TripRepository,  private val applicationContext: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ImageListViewModel::class.java)) {
-            return ImageListViewModel(repository, applicationContext) as T
+        if (modelClass.isAssignableFrom(TripListViewModel::class.java)) {
+            return TripListViewModel(repository, applicationContext) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -46,6 +46,10 @@
                 android:value="" />
         </activity>
         <activity
+            android:name="com.example.mobilesoftware.view.view.ImageListActivity"
+            android:exported="false"
+            android:label="ImageListAct"></activity>
+        <activity
             android:name="com.example.mobilesoftware.view.view.MainActivity"
             android:exported="true"
             android:label="Main Activity"></activity>
@@ -54,7 +58,7 @@
             android:exported="false"
             android:label="ShowImageActivity"></activity>
         <activity
-            android:name=".view.view.ImageListActivity"
+            android:name=".view.view.TripListActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:label="Image List">
