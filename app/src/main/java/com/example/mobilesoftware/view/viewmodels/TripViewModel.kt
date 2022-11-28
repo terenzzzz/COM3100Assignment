@@ -9,6 +9,8 @@ class TripViewModel : ViewModel {
     private var model: Trip = Trip()
 
     var title: ObservableField<String> = ObservableField()
+    var latitude: ObservableField<String> = ObservableField()
+    var longitude: ObservableField<String> = ObservableField()
 
     override fun onCreate() {}
     override fun onPause() {}
@@ -17,6 +19,12 @@ class TripViewModel : ViewModel {
 
     fun init(title:String?){
         this.title.set(title)
+
+    }
+
+    fun setLocation(latitude:String,longitude:String){
+        this.latitude.set(latitude)
+        this.longitude.set(longitude)
     }
 
 }
