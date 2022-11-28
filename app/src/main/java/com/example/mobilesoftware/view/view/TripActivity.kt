@@ -68,7 +68,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             }
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
         //        Set data
         val title = intent.getStringExtra("title")
         myViewModel.init(title)
