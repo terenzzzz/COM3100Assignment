@@ -11,6 +11,7 @@ data class ImageEntity (
     @ColumnInfo(name="image_path") val imagePath: String,
     @ColumnInfo(name="image_title") var title: String,
     @ColumnInfo(name="image_description") var description: String?,
+    @ColumnInfo(name="image_date") var date: String?,
     @ColumnInfo(name="thumbnail_filename") var thumbnail: String?,
     @ColumnInfo(name="tags") var tags: String?,
     @ColumnInfo(name="trip_id") var tripId: Int?,

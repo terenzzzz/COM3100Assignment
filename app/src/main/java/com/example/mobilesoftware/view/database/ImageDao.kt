@@ -18,6 +18,11 @@ interface ImageDao {
     @Query("Select * from image Where id = :id")
     fun getImage(id: Int): Flow<ImageEntity>
 
+    // Useful for tracking Entities
+    @Query("Select * from image Where trip_id = :id")
+    fun getImagesByID(id: Int): Flow<List<ImageEntity>>
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(imageEntity: ImageEntity): Long
 

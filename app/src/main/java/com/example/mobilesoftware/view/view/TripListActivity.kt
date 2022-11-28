@@ -29,6 +29,7 @@ import com.example.mobilesoftware.view.model.Trip
 import com.example.mobilesoftware.view.model.TripElement
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import java.time.LocalDate
 
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
@@ -61,6 +62,19 @@ class TripListActivity : TripAppCompatActivity() {
                 adapter.submitList(it)
             }
         }
+
+        val newTripFab : FloatingActionButton = findViewById(R.id.newTripFab)
+        newTripFab.setOnClickListener(View.OnClickListener { view ->
+            val int = Intent(this, MainActivity::class.java)
+            startActivity(int)
+        })
+
+        val browseAllBut : Button = findViewById(R.id.allPics)
+        browseAllBut.setOnClickListener(View.OnClickListener { view ->
+            val intent = Intent(this, ImageListActivity::class.java)
+            intent.putExtra("id", -1)
+            startActivity(this,intent,null)
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -167,7 +181,7 @@ class TripListActivity : TripAppCompatActivity() {
             fun bind(trip: TripElement, position: Int, context: Context){
 
                 titleView.setText(trip.title)
-                timeView.setText(trip.time)
+                timeView.setText(trip.date.toString())
 
                 itemView.setOnClickListener(View.OnClickListener {
                     onViewHolderItemClick(trip.id, position, context)

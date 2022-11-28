@@ -11,6 +11,7 @@ import com.example.mobilesoftware.view.database.TripEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
+import java.time.LocalDate
 
 class TripRepository(private val tripDao: TripDao) {
     // The ViewModel will observe this Flow
@@ -32,12 +33,12 @@ class TripRepository(private val tripDao: TripDao) {
      */
     suspend fun insert(
         title: String,
-        time: String
+        date: LocalDate
     ){
         var trip =
             TripElement(
                 title = title,
-                time = time
+                date = date
             )
         tripDao.insert(trip!!.asDatabaseEntity())
     }
@@ -63,7 +64,7 @@ fun TripEntity.asDomainModel(): TripElement {
     val trip = TripElement(
         id = id,
         title = title,
-        time = time
+        date = LocalDate.parse(date)
     )
     return trip
 }
@@ -74,7 +75,7 @@ fun List<TripEntity>.asDomainModels(): List<TripElement>{
         TripElement(
             id = it.id,
             title = it.title,
-            time = it.time
+            date = LocalDate.parse(it.date)
         )
     }
 }
@@ -86,7 +87,7 @@ fun TripElement.asDatabaseEntity(): TripEntity{
     return TripEntity(
         id = id,
         title = title,
-        time = time
+        date = date.toString()
     )
 }
 
@@ -98,7 +99,7 @@ fun List<TripElement>.asDatabaseEntities(): List<TripEntity>{
         TripEntity(
             id = it.id,
             title = it.title,
-            time = it.time
+            date = it.date.toString()
         )
     }
 }

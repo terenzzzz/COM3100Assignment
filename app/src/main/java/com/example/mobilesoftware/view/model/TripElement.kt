@@ -1,9 +1,11 @@
 package com.example.mobilesoftware.view.model
 
+import java.time.LocalDate
+
 data class TripElement(
     val id : Int = 0,
     val title : String,
-    val time : String
+    val date: LocalDate
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -13,6 +15,6 @@ data class TripElement(
         val other_trip = other as TripElement
         return this.id == other_trip.id &&
                 this.title == other_trip.title &&
-                this.time == other_trip.time
+                this.date == other_trip.date
     }
 }

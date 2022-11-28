@@ -14,6 +14,7 @@ import com.example.mobilesoftware.view.respository.asDomainModels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 
 /**
  * ImageViewModel stores and manage UI-related data in a lifecycle aware way. This
@@ -60,6 +61,7 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
             image_uri = image_uri,
             title = title,
             description = description,
+            date = LocalDate.now(),
             context = applicationContext)
     }
 

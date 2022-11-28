@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:orientation="vertical">
-
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="70dp"
+    android:layout_width="match_parent">
+    
     <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/titleTrip"
+        android:textStyle="bold"
+        android:textSize="20dp"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:text="Title"
-        android:id="@+id/titleTrip">
-
+        android:layout_height="30dp">
     </TextView>
     <TextView
-        android:layout_width="40dp"
-        android:layout_height="0dp"
-        android:text="Time"
-        android:id="@+id/timeTrip">
-    </TextView>
-    <TextView
+        app:layout_constraintTop_toBottomOf="@id/titleTrip"
+        android:id="@+id/timeTrip"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:text="Click here for more">
+        android:layout_height="20dp">
     </TextView>
-</LinearLayout>
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/timeTrip"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="Click for more"
+        android:textStyle="italic">
+    </TextView>
+    
+</androidx.constraintlayout.widget.ConstraintLayout>

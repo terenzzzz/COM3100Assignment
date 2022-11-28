@@ -89,6 +89,8 @@ class ImageListActivity : ImageAppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
+        val bundle: Bundle? = intent.extras
+        val tripID = bundle?.getInt("id")
 
         // Set up the adapter - easier with ListAdapter and observing of the data from the ViewModel
         recyclerView = findViewById<RecyclerView>(R.id.my_list)
@@ -100,6 +102,7 @@ class ImageListActivity : ImageAppCompatActivity() {
         imageViewModel.images.observe(this) {
             // update the dataset used by the Adapter
             it?.let {
+                it.filter { it.tripID == tripID }
                 adapter.submitList(it)
             }
         }
@@ -109,12 +112,6 @@ class ImageListActivity : ImageAppCompatActivity() {
         val photoPickerFab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.openGalleryFab)
         photoPickerFab.setOnClickListener(View.OnClickListener { view ->
             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        })
-
-        val mapTripBut : Button = findViewById(R.id.mapBut)
-        mapTripBut.setOnClickListener(View.OnClickListener { view ->
-            val int = Intent(this, MainActivity::class.java)
-            startActivity(int)
         })
 
         // Setup the CameraActivity to be started when the openCamFab button is clicked

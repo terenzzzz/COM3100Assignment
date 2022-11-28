@@ -1,6 +1,7 @@
 package com.example.mobilesoftware.view.model
 
 import android.net.Uri
+import java.time.LocalDate
 
 data class Image(
     val id: Int = 0,
@@ -8,6 +9,7 @@ data class Image(
     var title: String,
     var description: String? = null,
     var thumbnail: Uri? = null,
+    var date: LocalDate,
     var tags: String? = null,
     var tripID: Int? = null,
     var latitude: String? = null,

@@ -9,6 +9,7 @@ import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.database.ImageDao
 import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
+import java.time.LocalDate
 
 /**
  * The repository is instantiated in the ImageApplication class
@@ -39,12 +40,14 @@ class ImageRepository(private val imageDao: ImageDao) {
         image_uri: Uri,
         title: String,
         description: String? = null,
+        date: LocalDate,
         context: Context){
         var image =
             Image(
                 imagePath = image_uri,
                 title = title,
-                description = description
+                description = description,
+                date = date
             )
         image.getOrMakeThumbNail(context)
         imageDao.insert(image!!.asDatabaseEntity())
@@ -78,7 +81,8 @@ fun ImageEntity.asDomainModel(context: Context): Image {
         latitude = lati,
         longitude = longi,
         pressure = pressure,
-        temperature = temp)
+        temperature = temp,
+        date = LocalDate.parse(date))
     img.getOrMakeThumbNail(context)!!
     return img
 }
@@ -97,7 +101,8 @@ fun List<ImageEntity>.asDomainModels(context: Context): List<Image>{
             latitude = it.lati,
             longitude = it.longi,
             pressure = it.pressure,
-            temperature = it.temp
+            temperature = it.temp,
+            date = LocalDate.parse(it.date)
         )
     }
 }
@@ -117,7 +122,8 @@ fun Image.asDatabaseEntity(): ImageEntity{
         lati = latitude,
         longi = longitude,
         pressure = pressure,
-        temp = temperature
+        temp = temperature,
+        date = date.toString()
     )
 }
 
@@ -137,7 +143,8 @@ fun List<Image>.asDatabaseEntities(): List<ImageEntity>{
             lati = it.latitude,
             longi = it.longitude,
             pressure = it.pressure,
-            temp = it.temperature
+            temp = it.temperature,
+            date = it.date.toString()
         )
     }
 }

@@ -16,6 +16,7 @@ import com.example.mobilesoftware.view.respository.asDomainModels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 
 /**
  * ImageViewModel stores and manage UI-related data in a lifecycle aware way. This
@@ -55,11 +56,11 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
      */
     fun insert(
         title: String,
-        time: String
+        date: LocalDate
     ) = viewModelScope.launch {
         triprepository.insert(
             title = title,
-            time = time)
+            date = date)
     }
 
     /**
