@@ -2,7 +2,6 @@ package com.example.mobilesoftware.view.view
 
 import android.content.ContentUris
 import android.content.Intent
-import android.icu.text.Transliterator.Position
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -140,7 +139,7 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
         imageViewModel.update(image)
 
         // Start an intent to let the calling activity know an update has happened.
-        val intent = Intent(this@ShowImageActivity, MainActivity::class.java)
+        val intent = Intent(this@ShowImageActivity, NewTripActivity::class.java)
         intent.putExtra("position", position)
         intent.putExtra("updated",true)
         setResult(RESULT_OK,intent)
@@ -152,7 +151,7 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
         imageViewModel.delete(image)
 
         // Start an intent to let the calling activity know a delete has happened.
-        val intent = Intent(this@ShowImageActivity, MainActivity::class.java)
+        val intent = Intent(this@ShowImageActivity, NewTripActivity::class.java)
         intent.putExtra("position", position)
         intent.putExtra("deletion",true)
         setResult(RESULT_OK,intent)

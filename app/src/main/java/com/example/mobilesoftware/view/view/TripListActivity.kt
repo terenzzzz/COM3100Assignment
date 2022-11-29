@@ -4,16 +4,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
@@ -22,14 +18,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobilesoftware.R
-import com.example.mobilesoftware.view.ImageAppCompatActivity
 import com.example.mobilesoftware.view.TripAppCompatActivity
 import com.example.mobilesoftware.view.model.Image
-import com.example.mobilesoftware.view.model.Trip
 import com.example.mobilesoftware.view.model.TripElement
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import java.time.LocalDate
 
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
@@ -65,7 +57,7 @@ class TripListActivity : TripAppCompatActivity() {
 
         val newTripFab : FloatingActionButton = findViewById(R.id.newTripFab)
         newTripFab.setOnClickListener(View.OnClickListener { view ->
-            val int = Intent(this, MainActivity::class.java)
+            val int = Intent(this, NewTripActivity::class.java)
             startActivity(int)
         })
 
