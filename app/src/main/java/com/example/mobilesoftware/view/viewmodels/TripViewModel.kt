@@ -47,13 +47,17 @@ class TripViewModel : ViewModel {
         val currentTime = LocalDateTime.now()
         var diff = java.time.Duration.between(startTime,currentTime );
 
+        var seconds = diff.seconds
+        val HH: Long = seconds / 3600
+        val MM: Long = seconds % 3600 / 60
+        val SS: Long = seconds % 60
+
         val hms = String.format(
-            "%d:%02d:%02d",
-            diff.toHours(),
-            diff.toMinutes(),
-            diff.seconds
+            "%02d:%02d:%02d",
+            HH,MM,SS
         )
         this.duration.set(hms)
+
 
     }
 

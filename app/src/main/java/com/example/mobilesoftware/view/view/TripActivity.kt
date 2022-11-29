@@ -114,6 +114,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     override fun onResume() {
         super.onResume()
+        myViewModel.onResume()
         refreshLatLon()
     }
 
@@ -156,7 +157,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             .icon(BitmapDescriptorFactory.fromResource((R.drawable.blue_dot)))
             .position(point)
             .title("head"))!!
-
     }
 
     private fun drawLine(startLocation:Location,endLocation:Location){
