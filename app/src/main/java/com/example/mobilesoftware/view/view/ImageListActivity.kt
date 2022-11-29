@@ -15,6 +15,8 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -24,6 +26,8 @@ import com.example.mobilesoftware.view.ImageAppCompatActivity
 import com.example.mobilesoftware.view.model.Image
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
@@ -89,8 +93,6 @@ class ImageListActivity : ImageAppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
-        val bundle: Bundle? = intent.extras
-        val tripID = bundle?.getInt("id")
 
         // Set up the adapter - easier with ListAdapter and observing of the data from the ViewModel
         recyclerView = findViewById<RecyclerView>(R.id.my_list)
@@ -98,11 +100,16 @@ class ImageListActivity : ImageAppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(this, NUMBER_OF_COLOMNS)
 
+        val bundle: Bundle? = intent.extras
+        val tripID = bundle?.getInt("id")
+
         // start observing the date from the ViewModel
         imageViewModel.images.observe(this) {
             // update the dataset used by the Adapter
             it?.let {
-                it.filter { it.tripID == tripID }
+                if (tripID != null) {
+                    imageViewModel.filter(tripID)
+                }
                 adapter.submitList(it)
             }
         }
@@ -110,19 +117,17 @@ class ImageListActivity : ImageAppCompatActivity() {
         // Setup a photo picker Activity to be started when the openGalleryFab button is clicked
         // The ActivityResultContract, photoPicker, will handle the result when the photo picker Activity returns
         val photoPickerFab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.openGalleryFab)
-        photoPickerFab.setOnClickListener(View.OnClickListener { view ->
+        photoPickerFab.setOnClickListener(View.OnClickListener {
             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         })
 
         // Setup the CameraActivity to be started when the openCamFab button is clicked
         // The ActivityResultContract, pickFromCamera, will handle the result when the CameraActivity returns
-        /**
         val cameraPickerFab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.openCamFab)
-        cameraPickerFab.setOnClickListener(View.OnClickListener { view ->
+        cameraPickerFab.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, CameraActivity::class.java)
             pickFromCamera.launch(intent)
         })
-        **/
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

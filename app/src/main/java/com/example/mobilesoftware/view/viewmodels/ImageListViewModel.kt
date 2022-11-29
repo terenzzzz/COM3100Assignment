@@ -38,6 +38,10 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
         it.asDomainModel(applicationContext)
     }
 
+    fun filter(tripID : Int){
+        imgrepository.filter(tripID)
+    }
+
     /**
      * Launching a new coroutine to INSERT an Image object in a non-blocking way
      *

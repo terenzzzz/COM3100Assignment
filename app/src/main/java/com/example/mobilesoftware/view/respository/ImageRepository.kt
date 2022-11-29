@@ -21,9 +21,17 @@ class ImageRepository(private val imageDao: ImageDao) {
 
     // The ViewModel will observe this Flow
     // Room will handle executing this on a thread
-    val images: LiveData<List<ImageEntity>> = imageDao.getImages().asLiveData()
+    var images: LiveData<List<ImageEntity>> = imageDao.getImages().asLiveData()
 
     fun getImage(id: Int) = imageDao.getImage(id).asLiveData()
+
+    fun filter(tripID : Int){
+        if(tripID == -1){
+            images = imageDao.getImages().asLiveData()
+        }else{
+            images = imageDao.getImagesByID(tripID).asLiveData()
+        }
+    }
 
     @WorkerThread
     suspend fun insert(image: Image){
