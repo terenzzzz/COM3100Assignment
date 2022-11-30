@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
@@ -227,10 +229,12 @@ class ImageListActivity : ImageAppCompatActivity() {
 
         class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val imageView: ImageView = itemView.findViewById<View>(R.id.image_item) as ImageView
+            private val imgTView: TextView = itemView.findViewById<View>(R.id.imgitmtit) as TextView
 
             fun bind(image: Image, position: Int, context: Context){
 
                 imageView.setImageURI(image.thumbnail)
+                imgTView.text = image.title
 
                 itemView.setOnClickListener(View.OnClickListener {
                     // the listener is implemented in MainActivity

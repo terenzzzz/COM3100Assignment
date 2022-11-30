@@ -16,13 +16,21 @@ import java.time.LocalDate
 class TripRepository(private val tripDao: TripDao) {
     // The ViewModel will observe this Flow
     // Room will handle executing this on a thread
-    val trips: LiveData<List<TripEntity>> = tripDao.getTrips().asLiveData()
+    var trips: LiveData<List<TripEntity>> = tripDao.getTrips().asLiveData()
 
     fun getTrip(id: Int) = tripDao.getTrip(id).asLiveData()
 
     @WorkerThread
     suspend fun insert(trip: TripElement){
         tripDao.insert(trip.asDatabaseEntity())
+    }
+
+    fun sorting(setting : Int){
+        if(setting == 1){
+            trips = tripDao.getTripsDesc().asLiveData()
+        }else{
+            trips = tripDao.getTrips().asLiveData()
+        }
     }
 
     /**

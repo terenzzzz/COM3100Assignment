@@ -3,13 +3,12 @@ package com.example.mobilesoftware.view.view
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
@@ -22,6 +21,8 @@ import com.example.mobilesoftware.view.TripAppCompatActivity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.activity_new_trip.*
+
 
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
@@ -41,6 +42,16 @@ class TripListActivity : TripAppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
+
+        val sharedPref = this@TripListActivity.getPreferences(Context.MODE_PRIVATE)
+        val sortByDateSwitch : Switch = findViewById(R.id.switch1)
+        if(sharedPref.getInt("sort",0) == 1){
+            sortByDateSwitch.isChecked = true
+            sortByDateSwitch.text = "Sorted by Descending"
+            changeSort(sharedPref.getInt("sort",0))
+        }
+
+
         // Set up the adapter - easier with ListAdapter and observing of the data from the ViewModel
         recyclerView = findViewById<RecyclerView>(R.id.rctriplist)
         adapter = TripAdapter()
@@ -67,6 +78,28 @@ class TripListActivity : TripAppCompatActivity() {
             intent.putExtra("id", -1)
             startActivity(this,intent,null)
         })
+
+        sortByDateSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+            if(isChecked){
+                sorting(1,sharedPref)
+                sortByDateSwitch.text = "Sorted by Descending"
+            }else {
+                sortByDateSwitch.text = "Sorted by Ascending"
+                sorting(0, sharedPref)
+            }
+            recreate()
+        })
+    }
+
+    fun sorting(setting : Int, sharedPref: SharedPreferences){
+        val editor = sharedPref.edit()
+        editor.putInt("sort",setting)
+        editor.commit()
+        changeSort(setting)
+    }
+
+    private fun changeSort(setting : Int){
+        tripListViewModel.sorting(setting)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

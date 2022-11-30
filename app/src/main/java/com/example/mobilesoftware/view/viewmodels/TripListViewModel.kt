@@ -30,20 +30,21 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
 
     // Receive the Flow of ImageEntity data from the repository, but transform to the LiveData of Images
     // that will be observed fom the view
-    val trips: LiveData<List<TripElement>> = Transformations.map(triprepository.trips){
+    var trips: LiveData<List<TripElement>> = Transformations.map(triprepository.trips){
         it.asDomainModels()
     } as MutableLiveData<List<TripElement>>
-    /**
-     * Retrieves a single Image object for the specified id
-     */
-    fun getImage(id: Int) : LiveData<TripElement> = Transformations.map(triprepository.getTrip(id)){
-        it.asDomainModel()
+
+    fun sorting(setting: Int){
+        triprepository.sorting(setting)
+        trips = Transformations.map(triprepository.trips){
+            it.asDomainModels()
+        } as MutableLiveData<List<TripElement>>
     }
 
     /**
-     * Launching a new coroutine to INSERT an Image object in a non-blocking way
+     * Launching a new coroutine to INSERT an TripElement object in a non-blocking way
      *
-     * Usinh the viewModelScope means this function (and others below), don't need to be
+     * Using the viewModelScope means this function (and others below), don't need to be
      * suspending. Allowing the function to be directly consumable
      * from the view classes without declaring a coroutine scope in the view.
      */

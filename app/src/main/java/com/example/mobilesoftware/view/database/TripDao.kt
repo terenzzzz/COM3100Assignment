@@ -14,6 +14,9 @@ interface TripDao {
     @Query("Select * from trips ORDER by id ASC")
     fun getTrips(): Flow<List<TripEntity>>
 
+    @Query("Select * from trips ORDER by id DESC")
+    fun getTripsDesc(): Flow<List<TripEntity>>
+
     // Useful for tracking Entities
     @Query("Select * from trips Where id = :id")
     fun getTrip(id: Int): Flow<TripEntity>
