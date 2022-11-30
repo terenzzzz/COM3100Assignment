@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintSet.Transform
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
 import com.example.mobilesoftware.R
+import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.respository.ImageRepository
 import com.example.mobilesoftware.view.respository.asDomainModel
@@ -28,7 +29,7 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
 
     // Receive the Flow of ImageEntity data from the repository, but transform to the LiveData of Images
     // that will be observed fom the view
-    val images: LiveData<List<Image>> = Transformations.map(imgrepository.images){
+    var images: LiveData<List<Image>> = Transformations.map(imgrepository.images){
         it.asDomainModels(applicationContext)
     } as MutableLiveData<List<Image>>
     /**
@@ -40,6 +41,9 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
 
     fun filter(tripID : Int){
         imgrepository.filter(tripID)
+        images = Transformations.map(imgrepository.images){
+            it.asDomainModels(applicationContext)
+        } as MutableLiveData<List<Image>>
     }
 
     /**

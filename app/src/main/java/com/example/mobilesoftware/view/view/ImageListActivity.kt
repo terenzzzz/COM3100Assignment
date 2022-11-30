@@ -8,14 +8,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
@@ -102,14 +100,14 @@ class ImageListActivity : ImageAppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         val tripID = bundle?.getInt("id")
+        if (tripID != null) {
+            imageViewModel.filter(tripID)
+        }
 
         // start observing the date from the ViewModel
         imageViewModel.images.observe(this) {
             // update the dataset used by the Adapter
             it?.let {
-                if (tripID != null) {
-                    imageViewModel.filter(tripID)
-                }
                 adapter.submitList(it)
             }
         }
