@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="40dp"
+                    android:textSize="30dp"
                     android:text='@{viewModel.title}'/>
 
                 <LinearLayout
@@ -48,14 +48,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:weightSum="5">
+                        android:weightSum="6">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
                             android:textColor="@color/black"
+                            android:textStyle="bold"
                             android:text="Start Time:"
-                            android:layout_weight="2"
+                            android:layout_weight="3"
                             android:gravity="left"/>
                         <TextView
                             android:id="@+id/startTime"
@@ -74,14 +75,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:weightSum="5">
+                        android:weightSum="6">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
+                            android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="Now:"
-                            android:layout_weight="2"
+                            android:layout_weight="3"
                             android:gravity="left"/>
                         <TextView
                             android:id="@+id/currentTime"
@@ -99,14 +101,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:weightSum="5">
+                        android:weightSum="6">
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
+                            android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="Duration:"
-                            android:layout_weight="2"
+                            android:layout_weight="3"
                             android:gravity="left"/>
                         <TextView
                             android:id="@+id/duration"
@@ -117,6 +120,58 @@
                             android:textSize="20dp"
                             android:textColor="@color/black"
                             android:text='@{viewModel.duration}'
+                            android:gravity="left"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="6">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:text="Temperature:"
+                            android:layout_weight="3"
+                            android:gravity="left"/>
+                        <TextView
+                            android:id="@+id/temperature"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_weight="3"
+                            android:textSize="20dp"
+                            android:textColor="@color/black"
+                            android:text='@{viewModel.temperature+ `(℃)`}'
+                            android:gravity="left"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="6">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:text="Pressure:"
+                            android:layout_weight="3"
+                            android:gravity="left"/>
+                        <TextView
+                            android:id="@+id/pressure"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_weight="3"
+                            android:textSize="20dp"
+                            android:textColor="@color/black"
+                            android:text="@{viewModel.pressure + `(hpa)`}"
                             android:gravity="left"/>
                     </LinearLayout>
 

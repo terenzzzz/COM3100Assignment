@@ -14,6 +14,8 @@ class TripViewModel : ViewModel {
     var startTime: ObservableField<String> = ObservableField()
     var currentTime: ObservableField<String> = ObservableField()
     var duration: ObservableField<String> = ObservableField()
+    var temperature: ObservableField<String> = ObservableField()
+    var pressure: ObservableField<String> = ObservableField()
     var latitude: ObservableField<String> = ObservableField()
     var longitude: ObservableField<String> = ObservableField()
 
@@ -57,8 +59,14 @@ class TripViewModel : ViewModel {
             HH,MM,SS
         )
         this.duration.set(hms)
+    }
 
+    fun setTemperature(temperature:String){
+        this.temperature.set(temperature)
+    }
 
+    fun setPressure(Pressure:String){
+        this.pressure.set(Pressure)
     }
 
 
