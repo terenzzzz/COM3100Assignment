@@ -10,4 +10,5 @@ data class TripEntity (
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name="trip_title") val title: String,
     @ColumnInfo(name="trip_date") var date: String?,
+    @ColumnInfo(name="trip_time") var time: String?
 )

@@ -2,6 +2,7 @@ package com.example.mobilesoftware.view.viewmodels
 
 import android.os.Build
 import androidx.databinding.ObservableField
+import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.model.Trip
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -58,6 +59,10 @@ class TripViewModel : ViewModel {
         )
         this.duration.set(hms)
 
+
+    }
+
+    fun insertimage(image: ImageEntity){
 
     }
 

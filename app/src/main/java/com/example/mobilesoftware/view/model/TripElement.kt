@@ -1,11 +1,13 @@
 package com.example.mobilesoftware.view.model
 
+import java.sql.Time
 import java.time.LocalDate
 
 data class TripElement(
     val id : Int = 0,
     val title : String,
-    val date: LocalDate
+    val date: LocalDate,
+    val time: Time
 ) {
 
     override fun equals(other: Any?): Boolean {

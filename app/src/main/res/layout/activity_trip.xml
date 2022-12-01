@@ -184,8 +184,14 @@
                     android:id="@+id/take_pic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Take Pictures"
-                    android:layout_gravity="right"/>
+                    android:text="Take Picture"
+                    android:layout_gravity="right" />
+                <Button
+                    android:id="@+id/upload_pic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Picture"
+                    android:layout_gravity="right" />
                 <Button
                     android:id="@+id/stop"
                     android:layout_width="match_parent"

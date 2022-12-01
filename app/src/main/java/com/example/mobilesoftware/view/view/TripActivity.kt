@@ -7,8 +7,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 
@@ -29,6 +32,31 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     var myViewModel = TripViewModel()
 
     private lateinit var mMap: GoogleMap
+
+    /*
+    val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+        it?.let{ uri ->
+            // https://developer.android.com/training/data-storage/shared/photopicker#persist-media-file-access
+            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            this@TripActivity.contentResolver.takePersistableUriPermission(uri, flag)
+
+            myViewModel.insertimage(
+                image_uri = uri)
+        }
+    }
+
+    val pickFromCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result->
+        val photo_uri = result.data?.extras?.getString("uri")
+
+        photo_uri?.let{
+            val uri = Uri.parse(photo_uri)
+
+            myViewModel.insertimage(
+                image_uri = uri)
+        }
+    }
+
+     */
 
 //    Location
     val PERMISSION_LOCATION_GPS:Int = 1
@@ -98,6 +126,16 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             NewTripActivity.startFn(this)
             this.finish()
         }
+
+        binding.takePic.setOnClickListener {
+            //photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+
+        binding.uploadPic.setOnClickListener {
+//            val intent = Intent(this, CameraActivity::class.java)
+//            pickFromCamera.launch(intent)
+        }
+
 
         binding.stop.setOnClickListener { view ->
             // Do some work here
