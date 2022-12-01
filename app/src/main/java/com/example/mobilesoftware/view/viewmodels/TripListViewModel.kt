@@ -16,6 +16,7 @@ import com.example.mobilesoftware.view.respository.asDomainModels
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.sql.Time
 import java.time.LocalDate
 
 /**
@@ -57,11 +58,13 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
      */
     fun insert(
         title: String,
-        date: LocalDate
+        date: LocalDate,
+        time: Time
     ) = viewModelScope.launch {
         triprepository.insert(
             title = title,
-            date = date)
+            date = date,
+            time = time)
     }
 
     /**

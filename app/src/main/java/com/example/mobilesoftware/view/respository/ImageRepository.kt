@@ -33,6 +33,14 @@ class ImageRepository(private val imageDao: ImageDao) {
         }
     }
 
+    fun sorting(setting : Int){
+        if(setting == 1){
+            images = imageDao.getImagesDesc().asLiveData()
+        }else{
+            images = imageDao.getImages().asLiveData()
+        }
+    }
+
     @WorkerThread
     suspend fun insert(image: Image){
         imageDao.insert(image.asDatabaseEntity())

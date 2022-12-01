@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.model.Image
+import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.respository.ImageRepository
 import com.example.mobilesoftware.view.respository.asDomainModel
 import com.example.mobilesoftware.view.respository.asDomainModels
@@ -37,6 +38,13 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
      */
     fun getImage(id: Int) : LiveData<Image> = Transformations.map(imgrepository.getImage(id)){
         it.asDomainModel(applicationContext)
+    }
+
+    fun sorting(setting: Int){
+        imgrepository.sorting(setting)
+        images = Transformations.map(imgrepository.images){
+            it.asDomainModels(applicationContext)
+        } as MutableLiveData<List<Image>>
     }
 
     fun filter(tripID : Int){

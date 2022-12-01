@@ -3,14 +3,14 @@ package com.example.mobilesoftware.view.view
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -32,7 +32,6 @@ import org.w3c.dom.Text
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
 class ImageListActivity : ImageAppCompatActivity() {
-    val NUMBER_OF_COLOMNS = 3
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ImageAdapter
     private var adapterData: MutableList<Image>? = null
@@ -87,6 +86,11 @@ class ImageListActivity : ImageAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_images)
 
+        val display = windowManager.defaultDisplay.width
+        Log.i(TAG, display.toString())
+        val numberOfCols = (display / 250).toInt()
+        Log.i(TAG, numberOfCols.toString())
+
         // Check needed permissions are granted, otherwise request them
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(
@@ -94,11 +98,19 @@ class ImageListActivity : ImageAppCompatActivity() {
             )
         }
 
+        val sharedPref = this@ImageListActivity.getPreferences(Context.MODE_PRIVATE)
+        val sortByDateSwitch : Switch = findViewById(R.id.switch1)
+        if(sharedPref.getInt("sort",0) == 1){
+            sortByDateSwitch.isChecked = true
+            sortByDateSwitch.text = "Sorted by Descending"
+            changeSort(sharedPref.getInt("sort",0))
+        }
+
         // Set up the adapter - easier with ListAdapter and observing of the data from the ViewModel
         recyclerView = findViewById<RecyclerView>(R.id.my_list)
         adapter = ImageAdapter()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = GridLayoutManager(this, NUMBER_OF_COLOMNS)
+        recyclerView.layoutManager = GridLayoutManager(this, numberOfCols)
 
         val bundle: Bundle? = intent.extras
         val tripID = bundle?.getInt("id")
@@ -128,6 +140,17 @@ class ImageListActivity : ImageAppCompatActivity() {
             val intent = Intent(this, CameraActivity::class.java)
             pickFromCamera.launch(intent)
         })
+
+        sortByDateSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+            if(isChecked){
+                sorting(1,sharedPref)
+                sortByDateSwitch.text = "Sorted by Descending"
+            }else {
+                sortByDateSwitch.text = "Sorted by Ascending"
+                sorting(0, sharedPref)
+            }
+            recreate()
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -144,6 +167,17 @@ class ImageListActivity : ImageAppCompatActivity() {
         return if (id == R.id.action_settings) {
             true
         } else super.onOptionsItemSelected(item)
+    }
+
+    fun sorting(setting : Int, sharedPref: SharedPreferences){
+        val editor = sharedPref.edit()
+        editor.putInt("sort",setting)
+        editor.commit()
+        changeSort(setting)
+    }
+
+    private fun changeSort(setting : Int){
+        imageViewModel.sorting(setting)
     }
 
     // Called in onCreate to check if permissions have been granted

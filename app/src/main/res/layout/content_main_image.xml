@@ -9,6 +9,13 @@
     tools:context=".view.view.ImageListActivity"
     tools:showIn="@layout/activity_main_images">
 
+    <Switch
+        android:layout_marginLeft="5dp"
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sorted by Ascending"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/my_list"
         android:layout_width="wrap_content"

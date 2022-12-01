@@ -18,6 +18,9 @@ interface ImageDao {
     @Query("Select * from image Where id = :id")
     fun getImage(id: Int): Flow<ImageEntity>
 
+    @Query("Select * from image ORDER by id DESC")
+    fun getImagesDesc(): Flow<List<ImageEntity>>
+
     // Useful for tracking Entities
     @Query("Select * from image Where trip_id = :id")
     fun getImagesByID(id: Int): Flow<List<ImageEntity>>

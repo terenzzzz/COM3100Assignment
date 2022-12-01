@@ -11,6 +11,7 @@ import com.example.mobilesoftware.view.database.TripEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
+import java.sql.Time
 import java.time.LocalDate
 
 class TripRepository(private val tripDao: TripDao) {
@@ -41,12 +42,14 @@ class TripRepository(private val tripDao: TripDao) {
      */
     suspend fun insert(
         title: String,
-        date: LocalDate
+        date: LocalDate,
+        time: Time
     ){
         var trip =
             TripElement(
                 title = title,
-                date = date
+                date = date,
+                time = time
             )
         tripDao.insert(trip!!.asDatabaseEntity())
     }
@@ -72,7 +75,8 @@ fun TripEntity.asDomainModel(): TripElement {
     val trip = TripElement(
         id = id,
         title = title,
-        date = LocalDate.parse(date)
+        date = LocalDate.parse(date),
+        time = Time.valueOf(time)
     )
     return trip
 }
@@ -83,7 +87,8 @@ fun List<TripEntity>.asDomainModels(): List<TripElement>{
         TripElement(
             id = it.id,
             title = it.title,
-            date = LocalDate.parse(it.date)
+            date = LocalDate.parse(it.date),
+            time = Time.valueOf(it.time)
         )
     }
 }
@@ -95,7 +100,8 @@ fun TripElement.asDatabaseEntity(): TripEntity{
     return TripEntity(
         id = id,
         title = title,
-        date = date.toString()
+        date = date.toString(),
+        time = time.toString()
     )
 }
 
@@ -107,7 +113,8 @@ fun List<TripElement>.asDatabaseEntities(): List<TripEntity>{
         TripEntity(
             id = it.id,
             title = it.title,
-            date = it.date.toString()
+            date = it.date.toString(),
+            time = it.time.toString()
         )
     }
 }
