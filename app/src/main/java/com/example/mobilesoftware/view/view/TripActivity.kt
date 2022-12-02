@@ -6,6 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventCallback
+import android.hardware.SensorManager
+import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -30,7 +35,6 @@ import java.util.*
 class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     var myViewModel = TripViewModel()
-
     private lateinit var mMap: GoogleMap
 
     /*
@@ -65,6 +69,14 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private var headMarker:Marker? = null
+//    temperature & pressure
+    private lateinit var sensorManager: SensorManager
+    private var temperatureSensor: Sensor?=null
+    private lateinit var temperatureCallback: SensorEventCallback
+    private var pressureSensor: Sensor?=null
+    private lateinit var pressureCallback: SensorEventCallback
+
+
 
     companion object {
         fun startFn(context: Context) {
@@ -107,6 +119,28 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+//        Get Temperature
+        temperatureCallback = object : SensorEventCallback(){
+            override fun onSensorChanged(event: SensorEvent?) {
+                val temperature = event?.values?.get(0)
+                myViewModel.setTemperature(temperature.toString())
+            }
+        }
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
+
+//        Get Pressure
+        pressureCallback = object : SensorEventCallback(){
+            override fun onSensorChanged(event: SensorEvent?) {
+                val pressure = event?.values?.get(0)
+                myViewModel.setPressure(pressure.toString())
+            }
+        }
+        pressureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
+        sensorManager.registerListener(pressureCallback,pressureSensor,20000)
+
+
         //        Set data
         val title = intent.getStringExtra("title")
         val startTime = intent.getStringExtra("time")
@@ -148,12 +182,16 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         super.onPause()
         myViewModel.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        sensorManager.unregisterListener(temperatureCallback)
+        sensorManager.unregisterListener(pressureCallback)
     }
 
     override fun onResume() {
         super.onResume()
         myViewModel.onResume()
         refreshLatLon()
+        sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
+        sensorManager.registerListener(pressureCallback,temperatureSensor,20000)
     }
 
     override fun onDestroy() {
