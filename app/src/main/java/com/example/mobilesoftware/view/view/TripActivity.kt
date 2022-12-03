@@ -2,6 +2,7 @@ package com.example.mobilesoftware.view.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -92,7 +93,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         var binding = ActivityTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = myViewModel
-        myViewModel.onCreate()
 
         //        Add map
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -150,7 +150,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             override fun run() {
                 myViewModel.setCurrentTime()
                 if (startTime != null) {
-                    myViewModel.setDuration(startTime)
+                    myViewModel.setDuration()
                 }
             }
         }, 0,1000)
@@ -173,14 +173,15 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
         binding.stop.setOnClickListener { view ->
             // Do some work here
-            NewTripActivity.startFn(this)
+            myViewModel.returnTitle()
+                ?.let { myViewModel.insertTrip(it,myViewModel.returnStartTime(),myViewModel.returnDuration()) }
+            TripListActivity.startFn(this)
             this.finish()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        myViewModel.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
         sensorManager.unregisterListener(temperatureCallback)
         sensorManager.unregisterListener(pressureCallback)
@@ -188,7 +189,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     override fun onResume() {
         super.onResume()
-        myViewModel.onResume()
         refreshLatLon()
         sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
         sensorManager.registerListener(pressureCallback,temperatureSensor,20000)
@@ -196,7 +196,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     override fun onDestroy() {
         super.onDestroy()
-        myViewModel.onDestroy()
     }
 
 

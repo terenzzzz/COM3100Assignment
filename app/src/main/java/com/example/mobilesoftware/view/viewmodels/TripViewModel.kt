@@ -2,14 +2,22 @@ package com.example.mobilesoftware.view.viewmodels
 
 import android.os.Build
 import androidx.databinding.ObservableField
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.mobilesoftware.view.ImageApplication
 import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.model.Trip
+import com.example.mobilesoftware.view.respository.TripRepository
+import kotlinx.coroutines.launch
+import java.sql.Time
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class TripViewModel : ViewModel {
+class TripViewModel : ViewModel() {
     private var model: Trip = Trip()
+    private var tripRepository : TripRepository = ImageApplication().triprepository
 
     var title: ObservableField<String> = ObservableField()
     var startTime: ObservableField<String> = ObservableField()
@@ -19,11 +27,6 @@ class TripViewModel : ViewModel {
     var pressure: ObservableField<String> = ObservableField()
     var latitude: ObservableField<String> = ObservableField()
     var longitude: ObservableField<String> = ObservableField()
-
-    override fun onCreate() {}
-    override fun onPause() {}
-    override fun onResume() {}
-    override fun onDestroy() {}
 
     fun init(title:String?,time:String?){
         this.title.set(title)
@@ -44,9 +47,9 @@ class TripViewModel : ViewModel {
         }
     }
 
-    fun setDuration(start:String){
+    fun setDuration(){
         val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val startTime = LocalDateTime.parse(start, pattern)
+        val startTime = LocalDateTime.parse(this.startTime.get(), pattern)
         val currentTime = LocalDateTime.now()
         var diff = java.time.Duration.between(startTime,currentTime );
 
@@ -70,8 +73,31 @@ class TripViewModel : ViewModel {
         this.pressure.set(Pressure)
     }
 
+    fun returnStartTime(): LocalDate {
+        var startTimeString: String? = this.startTime.get()
+        val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val startTime = LocalDateTime.parse(startTimeString, pattern)
+        return startTime.toLocalDate()
+    }
+
+
+    fun returnDuration(): Time {
+        val durationString: String? = this.duration.get()
+        return Time.valueOf(durationString)
+    }
+
+    fun returnTitle(): String? {
+        return this.title.get()
+    }
+
     fun insertimage(image: ImageEntity){
 
+    }
+
+    fun insertTrip(title: String,date: LocalDate, time: Time){
+        viewModelScope.launch {
+            tripRepository.insert(title,date, time)
+        }
     }
 
 

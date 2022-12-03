@@ -2,19 +2,16 @@ package com.example.mobilesoftware.view.viewmodels
 
 import android.os.Build
 import androidx.databinding.ObservableField
+import androidx.lifecycle.ViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class NewTripViewModel : ViewModel {
+class NewTripViewModel : ViewModel() {
 
 
     var time: ObservableField<String> = ObservableField()
 
-    override fun onCreate() {}
-    override fun onPause() {}
-    override fun onResume() {}
-    override fun onDestroy() {}
 
     fun init(){
         if(Build.VERSION.SDK_INT>=26) {

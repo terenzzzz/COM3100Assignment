@@ -26,7 +26,6 @@ class NewTripActivity : AppCompatActivity() {
         var binding = ActivityNewTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = myViewModel
-        myViewModel.onCreate()
 
         Timer().schedule(object : TimerTask() {
             override fun run() {

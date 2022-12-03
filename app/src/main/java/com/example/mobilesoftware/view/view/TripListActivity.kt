@@ -162,6 +162,12 @@ class TripListActivity : TripAppCompatActivity() {
                     add(Manifest.permission.READ_MEDIA_IMAGES)
                 }
             }.toTypedArray()
+
+        fun startFn(context: Context) {
+            val intent =
+                Intent(context, TripListActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 
     /**
