@@ -2,16 +2,16 @@ package com.example.mobilesoftware.view.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventCallback
 import android.hardware.SensorManager
-import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -20,7 +20,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.databinding.ActivityTripBinding
 import com.example.mobilesoftware.view.viewmodels.TripViewModel
@@ -37,25 +36,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     var myViewModel = TripViewModel()
     private lateinit var mMap: GoogleMap
-
-    val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-        it?.let{ uri ->
-            // https://developer.android.com/training/data-storage/shared/photopicker#persist-media-file-access
-            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            this@TripActivity.contentResolver.takePersistableUriPermission(uri, flag)
-
-            myViewModel.insertimage(uri)
-        }
-    }
-
-    val pickFromCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result->
-        val photo_uri = result.data?.extras?.getString("uri")
-
-        photo_uri?.let{
-            val uri = Uri.parse(photo_uri)
-            myViewModel.insertimage(uri)
-        }
-    }
 
 //    Location
     val PERMISSION_LOCATION_GPS:Int = 1
@@ -82,15 +62,33 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         }
     }
 
+    val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+        it?.let{ uri ->
+            // https://developer.android.com/training/data-storage/shared/photopicker#persist-media-file-access
+            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            this@TripActivity.contentResolver.takePersistableUriPermission(uri, flag)
+
+            myViewModel.insertimage(uri)
+            this.addPicMarker(lastLocation.latitude,lastLocation.longitude)
+        }
+    }
+
+    val pickFromCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result->
+        val photo_uri = result.data?.extras?.getString("uri")
+
+        photo_uri?.let{
+            val uri = Uri.parse(photo_uri)
+            myViewModel.insertimage(uri)
+            this.addPicMarker(lastLocation.latitude,lastLocation.longitude)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         var binding = ActivityTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = myViewModel
-
-
-
 
         //        Add map
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -222,6 +220,16 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
 
+    private fun addPicMarker(latitude:Double,longitude:Double){
+        val point = LatLng(latitude, longitude)
+
+        mMap.addMarker(MarkerOptions()
+            .position(point)
+            .icon(BitmapDescriptorFactory.defaultMarker(180f))
+            .alpha(0.5f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
+    }
+
     private fun addDot(latitude:Double,longitude:Double){
         headMarker?.remove()
 
@@ -230,6 +238,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             .icon(BitmapDescriptorFactory.fromResource((R.drawable.blue_dot)))
             .position(point)
             .title("head"))!!
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
 
     private fun drawLine(startLocation:Location,endLocation:Location){
