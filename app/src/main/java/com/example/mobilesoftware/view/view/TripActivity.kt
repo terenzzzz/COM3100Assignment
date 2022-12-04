@@ -38,15 +38,13 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     var myViewModel = TripViewModel()
     private lateinit var mMap: GoogleMap
 
-    /*
     val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         it?.let{ uri ->
             // https://developer.android.com/training/data-storage/shared/photopicker#persist-media-file-access
             val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
             this@TripActivity.contentResolver.takePersistableUriPermission(uri, flag)
 
-            myViewModel.insertimage(
-                image_uri = uri)
+            myViewModel.insertimage(uri)
         }
     }
 
@@ -55,13 +53,9 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
         photo_uri?.let{
             val uri = Uri.parse(photo_uri)
-
-            myViewModel.insertimage(
-                image_uri = uri)
+            myViewModel.insertimage(uri)
         }
     }
-
-     */
 
 //    Location
     val PERMISSION_LOCATION_GPS:Int = 1
@@ -76,6 +70,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var temperatureCallback: SensorEventCallback
     private var pressureSensor: Sensor?=null
     private lateinit var pressureCallback: SensorEventCallback
+    private var tripID: Int = -1
 
 
 
@@ -93,6 +88,9 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         var binding = ActivityTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = myViewModel
+
+
+
 
         //        Add map
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -162,16 +160,16 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         }
 
         binding.takePic.setOnClickListener {
-            //photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            val intent = Intent(this, CameraActivity::class.java)
+            pickFromCamera.launch(intent)
         }
 
         binding.uploadPic.setOnClickListener {
-//            val intent = Intent(this, CameraActivity::class.java)
-//            pickFromCamera.launch(intent)
+            photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
 
-        binding.stop.setOnClickListener { view ->
+        binding.stop.setOnClickListener {
             // Do some work here
             myViewModel.returnTitle()
                 ?.let { myViewModel.insertTrip(it,myViewModel.returnStartTime(),myViewModel.returnDuration()) }

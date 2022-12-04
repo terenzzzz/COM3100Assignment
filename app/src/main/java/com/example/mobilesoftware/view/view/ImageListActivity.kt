@@ -36,6 +36,8 @@ class ImageListActivity : ImageAppCompatActivity() {
     private lateinit var adapter: ImageAdapter
     private var adapterData: MutableList<Image>? = null
 
+    /*
+
     val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         it?.let{ uri ->
             // https://developer.android.com/training/data-storage/shared/photopicker#persist-media-file-access
@@ -57,6 +59,8 @@ class ImageListActivity : ImageAppCompatActivity() {
                 image_uri = uri)
         }
     }
+
+     */
 
     val showImageActivityResultContract = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
         result?.let{
@@ -126,6 +130,7 @@ class ImageListActivity : ImageAppCompatActivity() {
             }
         }
 
+        /*
         // Setup a photo picker Activity to be started when the openGalleryFab button is clicked
         // The ActivityResultContract, photoPicker, will handle the result when the photo picker Activity returns
         val photoPickerFab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.openGalleryFab)
@@ -140,6 +145,8 @@ class ImageListActivity : ImageAppCompatActivity() {
             val intent = Intent(this, CameraActivity::class.java)
             pickFromCamera.launch(intent)
         })
+
+         */
 
         sortByDateSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if(isChecked){

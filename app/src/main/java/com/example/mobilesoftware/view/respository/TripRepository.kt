@@ -44,14 +44,14 @@ class TripRepository(private val tripDao: TripDao) {
         title: String,
         date: LocalDate,
         time: Time
-    ){
+    ) : Int{
         var trip =
             TripElement(
                 title = title,
                 date = date,
                 time = time
             )
-        tripDao.insert(trip!!.asDatabaseEntity())
+        return tripDao.insert(trip!!.asDatabaseEntity()).toInt()
     }
 
     suspend fun update(trip: TripElement){

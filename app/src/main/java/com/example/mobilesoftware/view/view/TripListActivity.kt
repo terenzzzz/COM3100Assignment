@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
@@ -21,6 +22,7 @@ import com.example.mobilesoftware.view.TripAppCompatActivity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_new_trip.*
 
 
@@ -31,6 +33,29 @@ class TripListActivity : TripAppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TripAdapter
     private var adapterData: MutableList<Image>? = null
+    val showImageActivityResultContract = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result->
+        result?.let{
+            val position = it.data?.extras?.getInt("position") ?: -1 // position not used, but may be useful in some cases
+            val delete_op = it.data?.extras?.getBoolean("deletion")
+            val update_op = it.data?.extras?.getBoolean("updated")
+            delete_op?.apply {
+                if(delete_op == true){
+                    Snackbar.make(/* view = */ recyclerView,
+                        /* text = */ "Image deleted.",
+                        /* duration = */ Snackbar.LENGTH_LONG)
+                        .show()
+                }
+            }
+            update_op?.apply {
+                if(update_op == true){
+                    Snackbar.make(/* view = */ recyclerView,
+                        /* text = */ "Image detail updated.",
+                        /* duration = */ Snackbar.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

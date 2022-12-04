@@ -17,6 +17,9 @@ interface TripDao {
     @Query("Select * from trips ORDER by id DESC")
     fun getTripsDesc(): Flow<List<TripEntity>>
 
+    @Query("SELECT * FROM trips ORDER BY id DESC LIMIT 0, 1")
+    fun GetNewestID(): Int
+
     // Useful for tracking Entities
     @Query("Select * from trips Where id = :id")
     fun getTrip(id: Int): Flow<TripEntity>

@@ -23,7 +23,9 @@ class ImageRepository(private val imageDao: ImageDao) {
     // Room will handle executing this on a thread
     var images: LiveData<List<ImageEntity>> = imageDao.getImages().asLiveData()
 
-    fun getImage(id: Int) = imageDao.getImage(id).asLiveData()
+    fun getImage(id: Int) : LiveData<ImageEntity>{
+        return imageDao.getImage(id).asLiveData()
+    }
 
     fun filter(tripID : Int){
         if(tripID == -1){
@@ -42,8 +44,8 @@ class ImageRepository(private val imageDao: ImageDao) {
     }
 
     @WorkerThread
-    suspend fun insert(image: Image){
-        imageDao.insert(image.asDatabaseEntity())
+    suspend fun insert(image: Image): Int{
+        return imageDao.insert(image.asDatabaseEntity()).toInt()
     }
 
     /**
@@ -67,6 +69,10 @@ class ImageRepository(private val imageDao: ImageDao) {
             )
         image.getOrMakeThumbNail(context)
         imageDao.insert(image!!.asDatabaseEntity())
+    }
+
+    suspend fun updateTripID(iid: Int, tid: Int){
+        imageDao.updateTripID(iid,tid)
     }
 
     suspend fun update(image: Image){

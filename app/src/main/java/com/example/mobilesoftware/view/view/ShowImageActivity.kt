@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
 import com.example.mobilesoftware.databinding.ActivityShowImageBinding
 import com.example.mobilesoftware.view.ImageAppCompatActivity
@@ -37,23 +38,20 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
             if (imageId > 0) {
                 // Observe the image data, only one will be received
                 imageViewModel.getImage(imageId).observe(this){
-                    val image = it
-                    // Display the model's data in the view. This is a lot of back and forth!
-                    loadImageView(image.imagePath.toString())
+                    if(it != null){
+                        val image = it
+                        // Display the model's data in the view. This is a lot of back and forth!
+                        loadImageView(image.imagePath.toString())
+                        binding.editTextTitle.setText(image.title)
+                        image.description?.isNotEmpty().apply {
+                            binding.editTextDescription.setText(image.description)
+                        }
 
-                    binding.editTextTitle.setText(image.title)
-                    image.description?.isNotEmpty().apply {
-                        binding.editTextDescription.setText(image.description)
-                    }
+                        // onClick listener for the update button
+                        binding.buttonSave.setOnClickListener {
+                            onUpdateButtonClickListener(it, image, position)
+                        }
 
-                    // onClick listener for the update button
-                    binding.buttonSave.setOnClickListener {
-                        onUpdateButtonClickListener(it, image, position)
-                    }
-
-                    // onClick listener for the delete button
-                    binding.buttonDelete.setOnClickListener {
-                        onDeleteButtonClickListener(it, image, position)
                     }
                 }
             }
@@ -139,7 +137,7 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
         imageViewModel.update(image)
 
         // Start an intent to let the calling activity know an update has happened.
-        val intent = Intent(this@ShowImageActivity, NewTripActivity::class.java)
+        val intent = Intent(this@ShowImageActivity, TripListActivity::class.java)
         intent.putExtra("position", position)
         intent.putExtra("updated",true)
         setResult(RESULT_OK,intent)
@@ -151,10 +149,12 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
         imageViewModel.delete(image)
 
         // Start an intent to let the calling activity know a delete has happened.
-        val intent = Intent(this@ShowImageActivity, NewTripActivity::class.java)
+        val intent = Intent(this@ShowImageActivity, TripListActivity::class.java)
         intent.putExtra("position", position)
         intent.putExtra("deletion",true)
         setResult(RESULT_OK,intent)
         finish()
+
+        // Start an intent to let the calling activity know a delete has happened.
     }
 }

@@ -25,9 +25,13 @@ interface ImageDao {
     @Query("Select * from image Where trip_id = :id")
     fun getImagesByID(id: Int): Flow<List<ImageEntity>>
 
+    @Query("UPDATE image SET trip_id=:tid WHERE id = :iid")
+    suspend fun updateTripID(iid : Int,tid : Int)
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(imageEntity: ImageEntity): Long
+
 
     @Update
     suspend fun update(imageEntity: ImageEntity)
