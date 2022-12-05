@@ -11,14 +11,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TripDao {
     // suspend keyword not needed with the use of Flow
-    @Query("Select * from trips ORDER by id ASC")
+    @Query("Select * from trips ORDER by id DESC")
     fun getTrips(): Flow<List<TripEntity>>
 
-    @Query("Select * from trips ORDER by id DESC")
+    @Query("Select * from trips ORDER by id ASC")
     fun getTripsDesc(): Flow<List<TripEntity>>
-
-    @Query("SELECT * FROM trips ORDER BY id DESC LIMIT 0, 1")
-    fun GetNewestID(): Int
 
     // Useful for tracking Entities
     @Query("Select * from trips Where id = :id")

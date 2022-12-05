@@ -8,14 +8,13 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventCallback
-import android.hardware.SensorManager
+import android.hardware.*
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import android.view.View
+import android.view.View.VISIBLE
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -126,6 +125,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
         sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
 
+
 //        Get Pressure
         pressureCallback = object : SensorEventCallback(){
             override fun onSensorChanged(event: SensorEvent?) {
@@ -157,9 +157,13 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             this.finish()
         }
 
-        binding.takePic.setOnClickListener {
-            val intent = Intent(this, CameraActivity::class.java)
-            pickFromCamera.launch(intent)
+        if(Camera.getNumberOfCameras() > 0) {
+            binding.takePic.setOnClickListener {
+                val intent = Intent(this, CameraActivity::class.java)
+                pickFromCamera.launch(intent)
+            }
+        }else{
+            binding.takePic.visibility = View.INVISIBLE
         }
 
         binding.uploadPic.setOnClickListener {
