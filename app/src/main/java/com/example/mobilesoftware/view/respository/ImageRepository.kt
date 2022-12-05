@@ -27,19 +27,19 @@ class ImageRepository(private val imageDao: ImageDao) {
         return imageDao.getImage(id).asLiveData()
     }
 
-    fun filter(tripID : Int){
+    fun filter(tripID : Int,setting: Int){
         if(tripID == -1){
-            images = imageDao.getImages().asLiveData()
+            if(setting == 0){
+                images = imageDao.getImages().asLiveData()
+            }else{
+                images = imageDao.getImagesDesc().asLiveData()
+            }
         }else{
-            images = imageDao.getImagesByID(tripID).asLiveData()
-        }
-    }
-
-    fun sorting(setting : Int){
-        if(setting == 1){
-            images = imageDao.getImagesDesc().asLiveData()
-        }else{
-            images = imageDao.getImages().asLiveData()
+            if(setting == 0){
+                images = imageDao.getImagesByIDAsc(tripID).asLiveData()
+            }else{
+                images = imageDao.getImagesByIDDesc(tripID).asLiveData()
+            }
         }
     }
 

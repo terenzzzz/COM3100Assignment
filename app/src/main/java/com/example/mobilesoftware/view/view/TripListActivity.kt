@@ -33,29 +33,6 @@ class TripListActivity : TripAppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TripAdapter
     private var adapterData: MutableList<Image>? = null
-    val showImageActivityResultContract = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result->
-        result?.let{
-            val position = it.data?.extras?.getInt("position") ?: -1 // position not used, but may be useful in some cases
-            val delete_op = it.data?.extras?.getBoolean("deletion")
-            val update_op = it.data?.extras?.getBoolean("updated")
-            delete_op?.apply {
-                if(delete_op == true){
-                    Snackbar.make(/* view = */ recyclerView,
-                        /* text = */ "Image deleted.",
-                        /* duration = */ Snackbar.LENGTH_LONG)
-                        .show()
-                }
-            }
-            update_op?.apply {
-                if(update_op == true){
-                    Snackbar.make(/* view = */ recyclerView,
-                        /* text = */ "Image detail updated.",
-                        /* duration = */ Snackbar.LENGTH_LONG)
-                        .show()
-                }
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,11 +45,12 @@ class TripListActivity : TripAppCompatActivity() {
             )
         }
 
+        // Checks the prefrences for sorting trips
         val sharedPref = this@TripListActivity.getPreferences(Context.MODE_PRIVATE)
         val sortByDateSwitch : Switch = findViewById(R.id.switch1)
         if(sharedPref.getInt("sort",0) == 1){
             sortByDateSwitch.isChecked = true
-            sortByDateSwitch.text = "Sorted by Descending"
+            sortByDateSwitch.text = "Sorted by earliest"
             changeSort(sharedPref.getInt("sort",0))
         }
 
@@ -91,12 +69,14 @@ class TripListActivity : TripAppCompatActivity() {
             }
         }
 
+        // Assigns listener to FAB to start a new trip
         val newTripFab : FloatingActionButton = findViewById(R.id.newTripFab)
         newTripFab.setOnClickListener(View.OnClickListener { view ->
             val int = Intent(this, NewTripActivity::class.java)
             startActivity(int)
         })
 
+        // Button that leads to browsing all images
         val browseAllBut : Button = findViewById(R.id.allPics)
         browseAllBut.setOnClickListener(View.OnClickListener { view ->
             val intent = Intent(this, ImageListActivity::class.java)
@@ -104,18 +84,20 @@ class TripListActivity : TripAppCompatActivity() {
             startActivity(this,intent,null)
         })
 
+        // listens to sort switch
         sortByDateSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if(isChecked){
                 sorting(1,sharedPref)
-                sortByDateSwitch.text = "Sorted by Descending"
+                sortByDateSwitch.text = "Sorted by earliest"
             }else {
-                sortByDateSwitch.text = "Sorted by Ascending"
+                sortByDateSwitch.text = "Sorted by latest"
                 sorting(0, sharedPref)
             }
             recreate()
         })
     }
 
+    // Function used to change preferences of sorting switch
     fun sorting(setting : Int, sharedPref: SharedPreferences){
         val editor = sharedPref.edit()
         editor.putInt("sort",setting)
@@ -123,24 +105,9 @@ class TripListActivity : TripAppCompatActivity() {
         changeSort(setting)
     }
 
+    // Informs viewmodel of change of sort and changes the LiveData
     private fun changeSort(setting : Int){
         tripListViewModel.sorting(setting)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        return if (id == R.id.action_settings) {
-            true
-        } else super.onOptionsItemSelected(item)
     }
 
     // Called in onCreate to check if permissions have been granted

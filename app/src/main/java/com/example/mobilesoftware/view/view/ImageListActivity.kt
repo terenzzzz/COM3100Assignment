@@ -34,33 +34,8 @@ import org.w3c.dom.Text
 class ImageListActivity : ImageAppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ImageAdapter
+    private var tripID = -1
     private var adapterData: MutableList<Image>? = null
-
-    /*
-
-    val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-        it?.let{ uri ->
-            // https://developer.android.com/training/data-storage/shared/photopicker#persist-media-file-access
-            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            this@ImageListActivity.contentResolver.takePersistableUriPermission(uri, flag)
-
-            imageViewModel.insert(
-                image_uri = uri)
-        }
-    }
-
-    val pickFromCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
-        val photo_uri = result.data?.extras?.getString("uri")
-
-        photo_uri?.let{
-            val uri = Uri.parse(photo_uri)
-
-            imageViewModel.insert(
-                image_uri = uri)
-        }
-    }
-
-     */
 
     val showImageActivityResultContract = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
         result?.let{
@@ -91,17 +66,10 @@ class ImageListActivity : ImageAppCompatActivity() {
         setContentView(R.layout.activity_main_images)
 
         val display = windowManager.defaultDisplay.width
-        Log.i(TAG, display.toString())
+        // set number of cols to how many can fit depending on width of
         val numberOfCols = (display / 250).toInt()
-        Log.i(TAG, numberOfCols.toString())
 
-        // Check needed permissions are granted, otherwise request them
-        if (!allPermissionsGranted()) {
-            ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-            )
-        }
-
+        // Checks for sorting preference
         val sharedPref = this@ImageListActivity.getPreferences(Context.MODE_PRIVATE)
         val sortByDateSwitch : Switch = findViewById(R.id.switch1)
         if(sharedPref.getInt("sort",0) == 1){
@@ -116,10 +84,11 @@ class ImageListActivity : ImageAppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(this, numberOfCols)
 
+        // Checks if is being loaded with TripID intent
         val bundle: Bundle? = intent.extras
-        val tripID = bundle?.getInt("id")
+        tripID = bundle?.getInt("id")!!
         if (tripID != null) {
-            imageViewModel.filter(tripID)
+            imageViewModel.filter(tripID,sharedPref.getInt("sort",0))
         }
 
         // start observing the date from the ViewModel
@@ -130,24 +99,7 @@ class ImageListActivity : ImageAppCompatActivity() {
             }
         }
 
-        /*
-        // Setup a photo picker Activity to be started when the openGalleryFab button is clicked
-        // The ActivityResultContract, photoPicker, will handle the result when the photo picker Activity returns
-        val photoPickerFab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.openGalleryFab)
-        photoPickerFab.setOnClickListener(View.OnClickListener {
-            photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        })
-
-        // Setup the CameraActivity to be started when the openCamFab button is clicked
-        // The ActivityResultContract, pickFromCamera, will handle the result when the CameraActivity returns
-        val cameraPickerFab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.openCamFab)
-        cameraPickerFab.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, CameraActivity::class.java)
-            pickFromCamera.launch(intent)
-        })
-
-         */
-
+        // Listener for sorting switch
         sortByDateSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if(isChecked){
                 sorting(1,sharedPref)
@@ -160,22 +112,7 @@ class ImageListActivity : ImageAppCompatActivity() {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        return if (id == R.id.action_settings) {
-            true
-        } else super.onOptionsItemSelected(item)
-    }
-
+    // Function used to change preferences of sorting switch
     fun sorting(setting : Int, sharedPref: SharedPreferences){
         val editor = sharedPref.edit()
         editor.putInt("sort",setting)
@@ -183,32 +120,9 @@ class ImageListActivity : ImageAppCompatActivity() {
         changeSort(setting)
     }
 
+    // Informs viewmodel of change of sort and changes the LiveData
     private fun changeSort(setting : Int){
-        imageViewModel.sorting(setting)
-    }
-
-    // Called in onCreate to check if permissions have been granted
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-    // called to request permissions
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                Toast.makeText(this,
-                    "All permissions granted by the user.",
-                    Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this,
-                    "Not all permissions granted by the user.",
-                    Toast.LENGTH_SHORT).show()
-            }
-        }
+        imageViewModel.filter(tripID,setting)
     }
 
     companion object {

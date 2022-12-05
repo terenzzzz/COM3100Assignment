@@ -40,15 +40,11 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
         it.asDomainModel(applicationContext)
     }
 
-    fun sorting(setting: Int){
-        imgrepository.sorting(setting)
-        images = Transformations.map(imgrepository.images){
-            it.asDomainModels(applicationContext)
-        } as MutableLiveData<List<Image>>
-    }
-
-    fun filter(tripID : Int){
-        imgrepository.filter(tripID)
+    /**
+     * Filters the images to only include those with the correct tripID
+     */
+    fun filter(tripID : Int,setting: Int){
+        imgrepository.filter(tripID,setting)
         images = Transformations.map(imgrepository.images){
             it.asDomainModels(applicationContext)
         } as MutableLiveData<List<Image>>
