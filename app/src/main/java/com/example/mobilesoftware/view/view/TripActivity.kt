@@ -157,6 +157,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             this.finish()
         }
 
+        // Removes take picture button if no cameras are avaliable
         if(Camera.getNumberOfCameras() > 0) {
             binding.takePic.setOnClickListener {
                 val intent = Intent(this, CameraActivity::class.java)

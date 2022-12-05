@@ -22,8 +22,12 @@ interface ImageDao {
     fun getImagesDesc(): Flow<List<ImageEntity>>
 
     // Useful for tracking Entities
-    @Query("Select * from image Where trip_id = :id")
-    fun getImagesByID(id: Int): Flow<List<ImageEntity>>
+    @Query("Select * from image Where trip_id = :id ORDER by id DESC")
+    fun getImagesByIDDesc(id: Int): Flow<List<ImageEntity>>
+
+    // Useful for tracking Entities
+    @Query("Select * from image Where trip_id = :id ORDER by id ASC")
+    fun getImagesByIDAsc(id: Int): Flow<List<ImageEntity>>
 
     @Query("UPDATE image SET trip_id=:tid WHERE id = :iid")
     suspend fun updateTripID(iid : Int,tid : Int)
