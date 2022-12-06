@@ -5,13 +5,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventCallback
+import android.hardware.SensorManager
+import android.icu.number.NumberFormatter.with
 import android.hardware.*
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.View.VISIBLE
@@ -21,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.databinding.ActivityTripBinding
+import com.example.mobilesoftware.view.dataParse.Weather
 import com.example.mobilesoftware.view.viewmodels.TripViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,6 +33,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.gson.Gson
+import com.squareup.picasso.Picasso
+import okhttp3.*
+import java.io.IOException
 import java.util.*
 
 
@@ -35,8 +44,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     var myViewModel = TripViewModel()
     private lateinit var mMap: GoogleMap
+    private val client = OkHttpClient()
+    private lateinit var binding: ActivityTripBinding
+    private var weatherIconShow = false
 
-//    Location
+
+    //    Location
     val PERMISSION_LOCATION_GPS:Int = 1
     private var startLocation: Location? =null
     private lateinit var lastLocation: Location
@@ -85,7 +98,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var binding = ActivityTripBinding.inflate(layoutInflater)
+        binding = ActivityTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = myViewModel
 
@@ -104,7 +117,9 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                         startLocation = location
                         lastLocation = location
                         addMarker(location.latitude,location.longitude)
+                        getWeather(location.latitude,location.longitude)
                     }
+
                     drawLine(lastLocation,location)
                     addDot(location.latitude,location.longitude)
                     lastLocation = location
@@ -142,6 +157,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         val startTime = intent.getStringExtra("time")
         myViewModel.init(title,startTime)
 
+
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 myViewModel.setCurrentTime()
@@ -150,6 +166,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                 }
             }
         }, 0,1000)
+
 
         binding.backIcon.setOnClickListener { view ->
             // Do some work here
@@ -252,7 +269,45 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             .add(LatLng(startLocation.latitude, startLocation.longitude), LatLng(endLocation.latitude, endLocation.longitude))
             .addSpan(StyleSpan(Color.BLUE))
         )
+    }
 
+    private fun getWeather(latitude:Double,longitude:Double){
+        var url = "https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=bb01585d3dafe1d3b04332150c924d32&units=metric"
+
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+//                    for ((name, value) in response.headers) {
+//                        println("$name: $value")
+//                    }
+                    val gson = Gson() // Or use new GsonBuilder().create();
+                    val parsed: Weather = gson.fromJson(response.body!!.string(), Weather::class.java)
+                    val weatherIcon = "https://openweathermap.org/img/wn/${parsed.weather?.get(0)?.icon}@2x.png"
+                    val weather = parsed.weather?.get(0)?.main
+                    val temp = "${parsed.main?.temp_min}(℃) - ${parsed.main?.temp_max}(℃)"
+                    if (weather != null) {
+                        myViewModel.setWeather(weatherIcon,weather,temp)
+                    }
+                    val uiHandler = Handler(Looper.getMainLooper())
+                    uiHandler.post(Runnable {
+                        Picasso.get()
+                            .load(weatherIcon)
+                            .fit()
+                            .into(binding.weatherIcon)
+                    })
+
+                }
+            }
+        })
     }
 
 

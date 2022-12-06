@@ -23,6 +23,10 @@ class TripViewModel : ViewModel() {
     private var tripRepository : TripRepository = ImageApplication().triprepository
     private var imageRepository : ImageRepository = ImageApplication().imgrepository
 
+    var weatherIcon: ObservableField<String> = ObservableField()
+    var weather: ObservableField<String> = ObservableField()
+    var temp: ObservableField<String> = ObservableField()
+
     var title: ObservableField<String> = ObservableField()
     var startTime: ObservableField<String> = ObservableField()
     var currentTime: ObservableField<String> = ObservableField()
@@ -77,6 +81,12 @@ class TripViewModel : ViewModel() {
 
     fun setPressure(Pressure:String){
         this.pressure.set(Pressure)
+    }
+
+    fun setWeather(weatherIcon:String, weather:String, temp:String){
+        this.weatherIcon.set(weatherIcon)
+        this.weather.set(weather)
+        this.temp.set(temp)
     }
 
     fun returnStartTime(): LocalDate {
