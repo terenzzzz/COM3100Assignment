@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
@@ -47,7 +48,7 @@ class TripListActivity : TripAppCompatActivity() {
 
         // Checks the prefrences for sorting trips
         val sharedPref = this@TripListActivity.getPreferences(Context.MODE_PRIVATE)
-        val sortByDateSwitch : Switch = findViewById(R.id.switch1)
+        val sortByDateSwitch : SwitchCompat = findViewById(R.id.switch1)
         if(sharedPref.getInt("sort",0) == 1){
             sortByDateSwitch.isChecked = true
             sortByDateSwitch.text = "Sorted by earliest"
@@ -97,7 +98,11 @@ class TripListActivity : TripAppCompatActivity() {
         })
     }
 
-    // Function used to change preferences of sorting switch
+
+    /**
+     * Changes the prefrences for TripList and then begins the function of
+     * telling the viewmodel to change how the values are sorted
+     **/
     fun sorting(setting : Int, sharedPref: SharedPreferences){
         val editor = sharedPref.edit()
         editor.putInt("sort",setting)

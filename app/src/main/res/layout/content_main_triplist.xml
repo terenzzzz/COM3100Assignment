@@ -9,12 +9,13 @@
     tools:context=".view.view.TripListActivity"
     tools:showIn="@layout/activity_main_triplist">
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:layout_marginLeft="5dp"
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sorted by latest"/>
+        android:text="@string/sortBL"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rctriplist"

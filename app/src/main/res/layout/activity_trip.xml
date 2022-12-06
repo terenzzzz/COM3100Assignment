@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="30dp"
+                    android:textSize="30sp"
                     android:text='@{viewModel.title}'/>
 
                 <LinearLayout
@@ -52,7 +52,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
                             android:text="Start Time:"
@@ -64,7 +64,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:layout_weight="3"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/black"
                             android:text='@{viewModel.startTime}'
                             android:gravity="left"/>
@@ -79,7 +79,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="Now:"
@@ -91,7 +91,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:layout_weight="3"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/black"
                             android:text='@{viewModel.currentTime}'
                             android:gravity="left"/>
@@ -105,7 +105,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="Duration:"
@@ -117,7 +117,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:layout_weight="3"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/black"
                             android:text='@{viewModel.duration}'
                             android:gravity="left"/>
@@ -131,7 +131,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="Temperature:"
@@ -143,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:layout_weight="3"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/black"
                             android:text='@{viewModel.temperature+ `(℃)`}'
                             android:gravity="left"/>
@@ -157,7 +157,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="Pressure:"
@@ -169,7 +169,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:layout_weight="3"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/black"
                             android:text="@{viewModel.pressure + `(hpa)`}"
                             android:gravity="left"/>
@@ -239,19 +239,19 @@
                     android:id="@+id/take_pic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Take Picture"
+                    android:text="@string/takeP"
                     android:layout_gravity="right" />
                 <Button
                     android:id="@+id/upload_pic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Upload Picture"
+                    android:text="@string/uplP"
                     android:layout_gravity="right" />
                 <Button
                     android:id="@+id/stop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Stop"
+                    android:text="@string/stopT"
                     android:layout_gravity="right"/>
 
 

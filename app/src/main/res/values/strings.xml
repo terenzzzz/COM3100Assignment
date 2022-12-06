@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">mobileSoftware</string>
+    <string name="c4m">Click for more</string>
+    <string name="sortBL">Sorted by latest</string>
+    <string name="sortBE">Sorted by earliest</string>
+    <string name="takeP">Take Picture</string>
+    <string name="uplP">Upload Picture</string>
+    <string name="stopT">Stop Trip</string>
 </resources>

@@ -1,11 +1,8 @@
 package com.example.mobilesoftware.view.respository
 
-import android.content.Context
-import android.net.Uri
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.database.TripDao
 import com.example.mobilesoftware.view.database.TripEntity
 import com.example.mobilesoftware.view.model.Image
@@ -21,17 +18,17 @@ class TripRepository(private val tripDao: TripDao) {
 
     fun getTrip(id: Int) = tripDao.getTrip(id).asLiveData()
 
-    @WorkerThread
-    suspend fun insert(trip: TripElement){
-        tripDao.insert(trip.asDatabaseEntity())
-    }
-
     fun sorting(setting : Int){
         if(setting == 1){
             trips = tripDao.getTripsDesc().asLiveData()
         }else{
             trips = tripDao.getTrips().asLiveData()
         }
+    }
+
+    @WorkerThread
+    suspend fun insert(trip: TripElement){
+        tripDao.insert(trip.asDatabaseEntity())
     }
 
     /**

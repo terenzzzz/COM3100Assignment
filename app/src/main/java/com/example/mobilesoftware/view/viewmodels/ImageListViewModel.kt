@@ -41,7 +41,8 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
     }
 
     /**
-     * Filters the images to only include those with the correct tripID
+     * Filters the images to only include those with the correct tripID and
+     * ordered in desired setting
      */
     fun filter(tripID : Int,setting: Int){
         imgrepository.filter(tripID,setting)

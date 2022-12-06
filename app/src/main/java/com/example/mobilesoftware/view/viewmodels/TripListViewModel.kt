@@ -35,6 +35,9 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
         it.asDomainModels()
     } as MutableLiveData<List<TripElement>>
 
+    /**
+     * Sorting the images to be in correct order
+     */
     fun sorting(setting: Int){
         triprepository.sorting(setting)
         trips = Transformations.map(triprepository.trips){

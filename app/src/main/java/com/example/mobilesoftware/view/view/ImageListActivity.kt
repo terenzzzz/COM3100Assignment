@@ -13,6 +13,7 @@ import android.view.*
 import android.widget.*
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +26,7 @@ import com.example.mobilesoftware.view.ImageAppCompatActivity
 import com.example.mobilesoftware.view.model.Image
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
@@ -39,17 +41,7 @@ class ImageListActivity : ImageAppCompatActivity() {
 
     val showImageActivityResultContract = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
         result?.let{
-            val position = it.data?.extras?.getInt("position") ?: -1 // position not used, but may be useful in some cases
-            val delete_op = it.data?.extras?.getBoolean("deletion")
             val update_op = it.data?.extras?.getBoolean("updated")
-            delete_op?.apply {
-                if(delete_op == true){
-                    Snackbar.make(/* view = */ recyclerView,
-                        /* text = */ "Image deleted.",
-                        /* duration = */ Snackbar.LENGTH_LONG)
-                        .show()
-                }
-            }
             update_op?.apply {
                 if(update_op == true){
                     Snackbar.make(/* view = */ recyclerView,
@@ -71,7 +63,7 @@ class ImageListActivity : ImageAppCompatActivity() {
 
         // Checks for sorting preference
         val sharedPref = this@ImageListActivity.getPreferences(Context.MODE_PRIVATE)
-        val sortByDateSwitch : Switch = findViewById(R.id.switch1)
+        val sortByDateSwitch : SwitchCompat = findViewById(R.id.switch1)
         if(sharedPref.getInt("sort",0) == 1){
             sortByDateSwitch.isChecked = true
             sortByDateSwitch.text = "Sorted by Descending"
@@ -112,7 +104,10 @@ class ImageListActivity : ImageAppCompatActivity() {
         })
     }
 
-    // Function used to change preferences of sorting switch
+    /**
+     * Changes the prefrences for ImageList and then begins the function of
+     * telling the viewmodel to change how the values are sorted
+     **/
     fun sorting(setting : Int, sharedPref: SharedPreferences){
         val editor = sharedPref.edit()
         editor.putInt("sort",setting)

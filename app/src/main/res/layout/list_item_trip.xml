@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/titleTrip"
         android:textStyle="bold"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:layout_width="match_parent"
         android:layout_height="30dp">
     </TextView>
@@ -27,7 +27,7 @@
         app:layout_constraintTop_toBottomOf="@id/timeTrip"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:text="Click for more"
+        android:text="@string/c4m"
         android:textStyle="italic">
     </TextView>
     
