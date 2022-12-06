@@ -66,7 +66,7 @@ class ImageListActivity : ImageAppCompatActivity() {
         val sortByDateSwitch : SwitchCompat = findViewById(R.id.switch1)
         if(sharedPref.getInt("sort",0) == 1){
             sortByDateSwitch.isChecked = true
-            sortByDateSwitch.text = "Sorted by Descending"
+            sortByDateSwitch.text = "Sorted by oldest"
             changeSort(sharedPref.getInt("sort",0))
         }
 
@@ -79,9 +79,7 @@ class ImageListActivity : ImageAppCompatActivity() {
         // Checks if is being loaded with TripID intent
         val bundle: Bundle? = intent.extras
         tripID = bundle?.getInt("id")!!
-        if (tripID != null) {
-            imageViewModel.filter(tripID,sharedPref.getInt("sort",0))
-        }
+        imageViewModel.filter(tripID,sharedPref.getInt("sort",0))
 
         // start observing the date from the ViewModel
         imageViewModel.images.observe(this) {
@@ -95,9 +93,9 @@ class ImageListActivity : ImageAppCompatActivity() {
         sortByDateSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if(isChecked){
                 sorting(1,sharedPref)
-                sortByDateSwitch.text = "Sorted by Descending"
+                sortByDateSwitch.text = "Sorted by oldest"
             }else {
-                sortByDateSwitch.text = "Sorted by Ascending"
+                sortByDateSwitch.text = "Sorted by latest"
                 sorting(0, sharedPref)
             }
             recreate()

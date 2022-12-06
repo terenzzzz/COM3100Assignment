@@ -19,14 +19,14 @@
                 android:id="@+id/backIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/actionModeCloseDrawable"/>
+                android:background="?attr/actionModeCloseDrawable" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 android:text='@{viewModel.title}'/>
         </androidx.appcompat.widget.Toolbar>
 
@@ -42,10 +42,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="30sp"
-                    android:text='@{viewModel.title}'/>
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
                     <ImageView
                         android:id="@+id/weather_icon"
                         android:layout_width="0dp"
@@ -60,13 +59,13 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="15dp"
+                            android:textSize="15sp"
                             android:textColor="@color/black"
                             android:text="@{viewModel.weather}"/>
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="15dp"
+                            android:textSize="15sp"
                             android:textColor="@color/black"
                             android:text="@{viewModel.temp}"/>
                     </LinearLayout>
@@ -210,9 +209,7 @@
                     </LinearLayout>
 
 
-                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:map="http://schemas.android.com/apk/res-auto"
-                        xmlns:tools="http://schemas.android.com/tools"
+                    <androidx.fragment.app.FragmentContainerView
                         android:id="@+id/map"
                         android:name="com.google.android.gms.maps.SupportMapFragment"
                         android:layout_marginVertical="10dp"
@@ -224,20 +221,27 @@
                     android:id="@+id/take_pic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/takeP"
+                    android:text="Take Picture"
                     android:layout_gravity="right" />
                 <Button
                     android:id="@+id/upload_pic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/uplP"
+                    android:text="Upload Picture"
                     android:layout_gravity="right" />
                 <Button
                     android:id="@+id/stop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/stopT"
+                    android:text="Stop"
                     android:layout_gravity="right"/>
+
+
+            </LinearLayout>
+
         </androidx.cardview.widget.CardView>
+
     </LinearLayout>
+
+
 </layout>

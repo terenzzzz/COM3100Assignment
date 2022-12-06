@@ -51,7 +51,7 @@ class TripListActivity : TripAppCompatActivity() {
         val sortByDateSwitch : SwitchCompat = findViewById(R.id.switch1)
         if(sharedPref.getInt("sort",0) == 1){
             sortByDateSwitch.isChecked = true
-            sortByDateSwitch.text = "Sorted by earliest"
+            sortByDateSwitch.text = "Sorted by oldest"
             changeSort(sharedPref.getInt("sort",0))
         }
 
@@ -89,7 +89,7 @@ class TripListActivity : TripAppCompatActivity() {
         sortByDateSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if(isChecked){
                 sorting(1,sharedPref)
-                sortByDateSwitch.text = "Sorted by earliest"
+                sortByDateSwitch.text = "Sorted by oldest"
             }else {
                 sortByDateSwitch.text = "Sorted by latest"
                 sorting(0, sharedPref)
@@ -106,7 +106,7 @@ class TripListActivity : TripAppCompatActivity() {
     fun sorting(setting : Int, sharedPref: SharedPreferences){
         val editor = sharedPref.edit()
         editor.putInt("sort",setting)
-        editor.commit()
+        editor.apply()
         changeSort(setting)
     }
 
