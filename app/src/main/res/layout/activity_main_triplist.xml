@@ -9,25 +9,15 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary">
+        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <Button
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary">
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Browse All Pictures"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:id="@+id/allPics">
-            </Button>
-        </androidx.appcompat.widget.Toolbar>
-
+            android:layout_height="50dp"
+            android:text="Browse All Pictures"
+            android:textStyle="bold"
+            android:id="@+id/allPics">
+        </Button>
 
     </com.google.android.material.appbar.AppBarLayout>
 

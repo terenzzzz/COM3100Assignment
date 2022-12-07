@@ -49,7 +49,7 @@
         <activity
             android:name="com.example.mobilesoftware.view.view.ImageListActivity"
             android:exported="false"
-            android:label="ImageListAct"></activity>
+            android:label="ImageListAct"/>
         <activity
             android:name="com.example.mobilesoftware.view.view.NewTripActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
@@ -58,7 +58,7 @@
         <activity
             android:name="com.example.mobilesoftware.view.view.ShowImageActivity"
             android:exported="false"
-            android:label="ShowImageActivity"></activity>
+            android:label="ShowImageActivity"/>
         <activity
             android:name="com.example.mobilesoftware.view.view.CameraActivity"
             android:exported="false">
@@ -69,8 +69,7 @@
         <activity
             android:name=".view.view.TripListActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:label="Image List">
+            android:label="Trip List">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

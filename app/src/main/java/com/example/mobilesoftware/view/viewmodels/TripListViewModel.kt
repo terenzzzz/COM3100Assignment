@@ -62,7 +62,7 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
     fun insert(
         title: String,
         date: LocalDate,
-        time: Time
+        time: String
     ) = viewModelScope.launch {
         triprepository.insert(
             title = title,

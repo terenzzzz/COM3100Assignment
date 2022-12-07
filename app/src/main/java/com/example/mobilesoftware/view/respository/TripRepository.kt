@@ -40,7 +40,7 @@ class TripRepository(private val tripDao: TripDao) {
     suspend fun insert(
         title: String,
         date: LocalDate,
-        time: Time
+        time: String
     ) : Int{
         var trip =
             TripElement(
@@ -73,7 +73,7 @@ fun TripEntity.asDomainModel(): TripElement {
         id = id,
         title = title,
         date = LocalDate.parse(date),
-        time = Time.valueOf(time)
+        time = time
     )
     return trip
 }
@@ -85,7 +85,7 @@ fun List<TripEntity>.asDomainModels(): List<TripElement>{
             id = it.id,
             title = it.title,
             date = LocalDate.parse(it.date),
-            time = Time.valueOf(it.time)
+            time = it.time
         )
     }
 }
@@ -98,7 +98,7 @@ fun TripElement.asDatabaseEntity(): TripEntity{
         id = id,
         title = title,
         date = date.toString(),
-        time = time.toString()
+        time = time
     )
 }
 
@@ -111,7 +111,7 @@ fun List<TripElement>.asDatabaseEntities(): List<TripEntity>{
             id = it.id,
             title = it.title,
             date = it.date.toString(),
-            time = it.time.toString()
+            time = it.time
         )
     }
 }

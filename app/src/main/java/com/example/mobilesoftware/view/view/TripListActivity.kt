@@ -204,12 +204,14 @@ class TripListActivity : TripAppCompatActivity() {
 
         class TripViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val titleView: TextView = itemView.findViewById<View>(R.id.titleTrip) as TextView
+            private val dateView: TextView = itemView.findViewById<View>(R.id.dateTrip) as TextView
             private val timeView: TextView = itemView.findViewById<View>(R.id.timeTrip) as TextView
 
             fun bind(trip: TripElement, position: Int, context: Context){
 
                 titleView.setText(trip.title)
-                timeView.setText(trip.date.toString())
+                dateView.setText(trip.date.toString())
+                timeView.setText("Duration: ${trip.time}")
 
                 itemView.setOnClickListener(View.OnClickListener {
                     onViewHolderItemClick(trip.id, position, context)

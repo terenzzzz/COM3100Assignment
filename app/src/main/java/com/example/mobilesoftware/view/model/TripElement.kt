@@ -7,7 +7,7 @@ data class TripElement(
     val id : Int = 0,
     val title : String,
     val date: LocalDate,
-    val time: Time
+    val time: String
 ) {
 
     override fun equals(other: Any?): Boolean {

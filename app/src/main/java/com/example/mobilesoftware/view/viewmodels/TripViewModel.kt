@@ -130,7 +130,7 @@ class TripViewModel : ViewModel() {
         }
     }
 
-    fun insertTrip(title: String,date: LocalDate, time: Time){
+    fun insertTrip(title: String,date: LocalDate, time: String){
         viewModelScope.launch {
             assignTripId(tripRepository.insert(title,date, time))
         }

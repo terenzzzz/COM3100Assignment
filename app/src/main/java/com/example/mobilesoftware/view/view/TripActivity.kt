@@ -192,7 +192,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         binding.stop.setOnClickListener {
             // Do some work here
             myViewModel.returnTitle()
-                ?.let { myViewModel.insertTrip(it,myViewModel.returnStartTime(),myViewModel.returnDuration()) }
+                ?.let { myViewModel.insertTrip(it,myViewModel.returnStartTime(),myViewModel.returnDuration().toString()) }
             TripListActivity.startFn(this)
             this.finish()
         }
