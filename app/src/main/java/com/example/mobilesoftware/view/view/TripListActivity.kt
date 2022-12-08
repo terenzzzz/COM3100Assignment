@@ -1,6 +1,7 @@
 package com.example.mobilesoftware.view.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,18 +23,17 @@ import com.example.mobilesoftware.view.TripAppCompatActivity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_new_trip.*
 
 
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
 class TripListActivity : TripAppCompatActivity() {
-    val NUMBER_OF_COLOMNS = 1
+    private val NUMBER_OF_COLUMNS = 1
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TripAdapter
     private var adapterData: MutableList<Image>? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_triplist)
@@ -46,7 +45,7 @@ class TripListActivity : TripAppCompatActivity() {
             )
         }
 
-        // Checks the prefrences for sorting trips
+        // Checks the preferences for sorting trips
         val sharedPref = this@TripListActivity.getPreferences(Context.MODE_PRIVATE)
         val sortByDateSwitch : SwitchCompat = findViewById(R.id.switch1)
         if(sharedPref.getInt("sort",0) == 1){
@@ -57,10 +56,10 @@ class TripListActivity : TripAppCompatActivity() {
 
 
         // Set up the adapter - easier with ListAdapter and observing of the data from the ViewModel
-        recyclerView = findViewById<RecyclerView>(R.id.rctriplist)
+        recyclerView = findViewById(R.id.rctriplist)
         adapter = TripAdapter()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = GridLayoutManager(this, NUMBER_OF_COLOMNS)
+        recyclerView.layoutManager = GridLayoutManager(this, NUMBER_OF_COLUMNS)
 
         // start observing the date from the ViewModel
         tripListViewModel.trips.observe(this) {
@@ -72,45 +71,45 @@ class TripListActivity : TripAppCompatActivity() {
 
         // Assigns listener to FAB to start a new trip
         val newTripFab : FloatingActionButton = findViewById(R.id.newTripFab)
-        newTripFab.setOnClickListener(View.OnClickListener { view ->
+        newTripFab.setOnClickListener {
             val int = Intent(this, NewTripActivity::class.java)
             startActivity(int)
-        })
+        }
 
         // Button that leads to browsing all images
         val browseAllBut : Button = findViewById(R.id.allPics)
-        browseAllBut.setOnClickListener(View.OnClickListener { view ->
+        browseAllBut.setOnClickListener {
             val intent = Intent(this, ImageListActivity::class.java)
             intent.putExtra("id", -1)
-            startActivity(this,intent,null)
-        })
+            startActivity(this, intent, null)
+        }
 
         // listens to sort switch
-        sortByDateSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            if(isChecked){
-                sorting(1,sharedPref)
+        sortByDateSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                sorting(1, sharedPref)
                 sortByDateSwitch.text = "Sorted by oldest"
-            }else {
+            } else {
                 sortByDateSwitch.text = "Sorted by latest"
                 sorting(0, sharedPref)
             }
             recreate()
-        })
+        }
     }
 
 
     /**
-     * Changes the prefrences for TripList and then begins the function of
-     * telling the viewmodel to change how the values are sorted
+     * Changes the preferences for TripList and then begins the function of
+     * telling the view model to change how the values are sorted
      **/
-    fun sorting(setting : Int, sharedPref: SharedPreferences){
+    private fun sorting(setting : Int, sharedPref: SharedPreferences){
         val editor = sharedPref.edit()
         editor.putInt("sort",setting)
         editor.apply()
         changeSort(setting)
     }
 
-    // Informs viewmodel of change of sort and changes the LiveData
+    // Informs view model of change of sort and changes the LiveData
     private fun changeSort(setting : Int){
         tripListViewModel.sorting(setting)
     }
@@ -183,7 +182,7 @@ class TripListActivity : TripAppCompatActivity() {
      * the Holder items, because an inter class can access the outer class' members. This helps
      * even further to logically organize the code better.
      */
-    class TripAdapter: ListAdapter<TripElement, TripAdapter.TripViewHolder>(TripAdapter.TripViewHolder.TripComparator()) {
+    class TripAdapter: ListAdapter<TripElement, TripAdapter.TripViewHolder>(TripViewHolder.TripComparator()) {
         // Notice we no longer are passing the context in the constructor and we don't need a
         // constructor either because all that was all part of setting up the boiler
         // plate coding needed to ensure we can notify of data changes.
@@ -207,15 +206,16 @@ class TripListActivity : TripAppCompatActivity() {
             private val dateView: TextView = itemView.findViewById<View>(R.id.dateTrip) as TextView
             private val timeView: TextView = itemView.findViewById<View>(R.id.timeTrip) as TextView
 
+            @SuppressLint("SetTextI18n")
             fun bind(trip: TripElement, position: Int, context: Context){
 
-                titleView.setText(trip.title)
-                dateView.setText(trip.date.toString())
-                timeView.setText("Duration: ${trip.time}")
+                titleView.text = trip.title
+                dateView.text = trip.date.toString()
+                timeView.text = "Duration: ${trip.time}"
 
-                itemView.setOnClickListener(View.OnClickListener {
+                itemView.setOnClickListener {
                     onViewHolderItemClick(trip.id, position, context)
-                })
+                }
             }
 
             companion object{
@@ -246,7 +246,7 @@ class TripListActivity : TripAppCompatActivity() {
              */
             class TripComparator : DiffUtil.ItemCallback<TripElement>() {
                 override fun areItemsTheSame(oldTrip: TripElement, trip: TripElement): Boolean {
-                    return oldTrip.id === trip.id
+                    return oldTrip.id == trip.id
                 }
 
                 override fun areContentsTheSame(oldTrip: TripElement, trip: TripElement): Boolean {
