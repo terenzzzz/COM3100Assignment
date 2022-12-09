@@ -1,6 +1,7 @@
 package com.example.mobilesoftware.view.view
 
 import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,9 +17,17 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import com.example.mobilesoftware.R
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 
-class   ShowImageActivity  : ImageAppCompatActivity() {
+class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityShowImageBinding
+    private lateinit var mMap: GoogleMap
+
 
     // This class didn't change so much as the other classes serve to show the examples intended well enough
     // Still, you should pay attention to the relevant changes.
@@ -46,6 +55,17 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
                         image.description?.isNotEmpty().apply {
                             binding.editTextDescription.setText(image.description)
                         }
+                        println(image.latitude)
+                        println(image.longitude)
+                        println(image.tripID)
+
+                        val manager: FragmentManager = supportFragmentManager
+                        val transaction: FragmentTransaction = manager.beginTransaction()
+
+
+                        val mapFragment = supportFragmentManager.findFragmentById(R.id.fl_map) as SupportMapFragment
+                        mapFragment.getMapAsync(this)
+
 
                         // onClick listener for the update button
                         binding.buttonSave.setOnClickListener {
@@ -57,7 +77,9 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
             }
         }
     }
-
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+    }
     /**
      * This function will either use the file path to load the image by default
      * Or can load from MediaStore when defaultToPath is false and the
@@ -110,7 +132,7 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
             MediaStore.Images.Media.RELATIVE_PATH,
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.SIZE
-            )
+        )
 
         withContext(Dispatchers.IO){
             contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -118,10 +140,10 @@ class   ShowImageActivity  : ImageAppCompatActivity() {
                 MediaStore.Images.Media._ID + " = $id",
                 null,
                 null)?.use {cursor ->
-                    if(cursor.moveToFirst()){
-                        // Gets a current URI for the media store item
-                        current_access_uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id.toLong())
-                    }
+                if(cursor.moveToFirst()){
+                    // Gets a current URI for the media store item
+                    current_access_uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id.toLong())
+                }
             }
         }
         current_access_uri?.let{
