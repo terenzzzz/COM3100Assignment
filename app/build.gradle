@@ -10,10 +10,11 @@ plugins {
 
 android {
     namespace 'com.example.mobilesoftware'
+
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.mobilesoftware"
+        applicationId "uk.ac.shef.oak.com6510"
         minSdk 28
         targetSdk 33
         versionCode 1
