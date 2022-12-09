@@ -5,24 +5,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.mobilesoftware.view.database.TripDao
 import com.example.mobilesoftware.view.database.TripEntity
-import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
-import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
-import java.sql.Time
 import java.time.LocalDate
 
+/**
+ * The repository is instantiated in the ImageApplication class
+ * and passed an instance of a DAO obtained returned by the room database
+ * instance, so we only need this private tripDao property in the
+ * default constructor in this implementation
+ */
 class TripRepository(private val tripDao: TripDao) {
     // The ViewModel will observe this Flow
     // Room will handle executing this on a thread
     var trips: LiveData<List<TripEntity>> = tripDao.getTrips().asLiveData()
 
-    fun getTrip(id: Int) = tripDao.getTrip(id).asLiveData()
-
     fun sorting(setting : Int){
-        if(setting == 1){
-            trips = tripDao.getTripsDesc().asLiveData()
+        trips = if(setting == 1){
+            tripDao.getTripsDesc().asLiveData()
         }else{
-            trips = tripDao.getTrips().asLiveData()
+            tripDao.getTrips().asLiveData()
         }
     }
 
@@ -42,13 +43,13 @@ class TripRepository(private val tripDao: TripDao) {
         date: LocalDate,
         time: String
     ) : Int{
-        var trip =
+        val trip =
             TripElement(
                 title = title,
                 date = date,
                 time = time
             )
-        return tripDao.insert(trip!!.asDatabaseEntity()).toInt()
+        return tripDao.insert(trip.asDatabaseEntity()).toInt()
     }
 
     suspend fun update(trip: TripElement){
@@ -62,20 +63,14 @@ class TripRepository(private val tripDao: TripDao) {
 
 /***
  * Function to map database entities to the domain model
- *
- *  Easier to appropriate the importance of this when you consider the fact
- * that the domain model may need to represent other properties and methods
- * which do not need to be present in the entity representation. In this particular implementation
- * they match exactly, but the implementation is ready if they start to diverge
  */
 fun TripEntity.asDomainModel(): TripElement {
-    val trip = TripElement(
+    return TripElement(
         id = id,
         title = title,
         date = LocalDate.parse(date),
         time = time
     )
-    return trip
 }
 
 
@@ -91,7 +86,7 @@ fun List<TripEntity>.asDomainModels(): List<TripElement>{
 }
 
 /**
- * The version of the above function that handles a collection
+ * The versions of the above functions that handles a collection
  */
 fun TripElement.asDatabaseEntity(): TripEntity{
     return TripEntity(
@@ -102,9 +97,6 @@ fun TripElement.asDatabaseEntity(): TripEntity{
     )
 }
 
-/**
- * The version of the above function that handles a collection
- */
 fun List<TripElement>.asDatabaseEntities(): List<TripEntity>{
     return map{
         TripEntity(

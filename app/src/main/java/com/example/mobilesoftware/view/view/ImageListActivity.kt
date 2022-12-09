@@ -4,19 +4,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -24,12 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.view.ImageAppCompatActivity
 import com.example.mobilesoftware.view.model.Image
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.switchmaterial.SwitchMaterial
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
@@ -37,13 +25,12 @@ class ImageListActivity : ImageAppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ImageAdapter
     private var tripID = -1
-    private var adapterData: MutableList<Image>? = null
 
     val showImageActivityResultContract = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
         result?.let{
-            val update_op = it.data?.extras?.getBoolean("updated")
-            update_op?.apply {
-                if(update_op == true){
+            val update = it.data?.extras?.getBoolean("updated")
+            update?.apply {
+                if(update == true){
                     Snackbar.make(/* view = */ recyclerView,
                         /* text = */ "Image detail updated.",
                         /* duration = */ Snackbar.LENGTH_LONG)
@@ -64,6 +51,7 @@ class ImageListActivity : ImageAppCompatActivity() {
         // Checks for sorting preference
         val sharedPref = this@ImageListActivity.getPreferences(Context.MODE_PRIVATE)
         val sortByDateSwitch : SwitchCompat = findViewById(R.id.switch1)
+
         if(sharedPref.getInt("sort",0) == 1){
             sortByDateSwitch.isChecked = true
             sortByDateSwitch.text = "Sorted by oldest"

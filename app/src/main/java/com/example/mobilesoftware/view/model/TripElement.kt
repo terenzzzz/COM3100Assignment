@@ -1,6 +1,5 @@
 package com.example.mobilesoftware.view.model
 
-import java.sql.Time
 import java.time.LocalDate
 
 data class TripElement(
