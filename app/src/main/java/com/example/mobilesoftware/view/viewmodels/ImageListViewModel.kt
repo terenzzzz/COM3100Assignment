@@ -54,7 +54,7 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
     /**
      * Launching a new coroutine to INSERT an Image object in a non-blocking way
      *
-     * Usinh the viewModelScope means this function (and others below), don't need to be
+     * Using the viewModelScope means this function (and others below), don't need to be
      * suspending. Allowing the function to be directly consumable
      * from the view classes without declaring a coroutine scope in the view.
      */
@@ -67,7 +67,7 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
      */
     fun insert(
         image_uri: Uri,
-        title: String = "Default",
+        title: String = "Title here",
         description: String? = null
     ) = viewModelScope.launch {
         imgrepository.insert(

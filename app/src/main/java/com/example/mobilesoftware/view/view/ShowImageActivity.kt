@@ -1,5 +1,7 @@
 package com.example.mobilesoftware.view.view
 
+import ShowImageViewModel
+
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -27,7 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment
 class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityShowImageBinding
     private lateinit var mMap: GoogleMap
-
+    //var myViewModel: ShowImageViewModel()
 
     // This class didn't change so much as the other classes serve to show the examples intended well enough
     // Still, you should pay attention to the relevant changes.
@@ -52,18 +54,20 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         // Display the model's data in the view. This is a lot of back and forth!
                         loadImageView(image.imagePath.toString())
                         binding.editTextTitle.setText(image.title)
+                        binding.editTextDescription.setHint("Enter Description")
                         image.description?.isNotEmpty().apply {
                             binding.editTextDescription.setText(image.description)
                         }
+                        binding.pressure.text = image.pressure+ " HPa"
+                        binding.temperature.text=image.temperature
+                        binding.date.text=image.date.toString()
+
                         println(image.latitude)
                         println(image.longitude)
                         println(image.tripID)
 
                         val manager: FragmentManager = supportFragmentManager
-                        val transaction: FragmentTransaction = manager.beginTransaction()
-
-
-                        val mapFragment = supportFragmentManager.findFragmentById(R.id.fl_map) as SupportMapFragment
+                        val mapFragment = manager.findFragmentById(R.id.fl_map) as SupportMapFragment
                         mapFragment.getMapAsync(this)
 
 
