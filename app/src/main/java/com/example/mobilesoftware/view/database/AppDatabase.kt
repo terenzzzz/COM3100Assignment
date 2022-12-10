@@ -12,6 +12,8 @@ abstract class AppDatabase: RoomDatabase() {
 
     abstract fun tripDao(): TripDao
 
+    abstract fun locationDao(): LocationDao
+
     companion object{
         private val DATABASE_NAME = "SoftwareAssignment"
         // For Singleton instantiation

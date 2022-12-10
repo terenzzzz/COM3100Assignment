@@ -3,9 +3,13 @@ package com.example.mobilesoftware.view.respository
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import com.example.mobilesoftware.view.database.LocationDao
+import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.database.TripDao
 import com.example.mobilesoftware.view.database.TripEntity
+import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.model.TripElement
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 /**
@@ -13,8 +17,11 @@ import java.time.LocalDate
  * and passed an instance of a DAO obtained returned by the room database
  * instance, so we only need this private tripDao property in the
  * default constructor in this implementation
+ *
+ * This handles the Trip table and the location table since they are
+ * both very related
  */
-class TripRepository(private val tripDao: TripDao) {
+class TripRepository(private val tripDao: TripDao,private val locationDao: LocationDao) {
     // The ViewModel will observe this Flow
     // Room will handle executing this on a thread
     var trips: LiveData<List<TripEntity>> = tripDao.getTrips().asLiveData()
@@ -59,10 +66,31 @@ class TripRepository(private val tripDao: TripDao) {
     suspend fun delete(trip: TripElement){
         tripDao.delete(trip.asDatabaseEntity())
     }
+
+    /**
+     * This portion will handle the LocaitonDAO interactions and
+     * provide all the functions for handling locations
+     */
+
+    @WorkerThread
+    suspend fun insertLocation(location: Location) {
+        locationDao.insert(location.asDatabaseEntity())
+    }
+
+    suspend fun updateLocationTripID(lid: Int, tid: Int){
+        locationDao.updateLocationsTripID(lid,tid)
+    }
+
+    suspend fun getLocationsByTripID(tid: Int): Flow<List<LocationEntity>> {
+        return locationDao.getLocationsByTripID(tid)
+    }
+
+
 }
 
+
 /***
- * Function to map database entities to the domain model
+ * Function to map Trip database entities to the domain model
  */
 fun TripEntity.asDomainModel(): TripElement {
     return TripElement(
@@ -107,3 +135,29 @@ fun List<TripElement>.asDatabaseEntities(): List<TripEntity>{
         )
     }
 }
+
+/***
+ * Function to map Location database entities to the domain model
+ */
+fun LocationEntity.asDomainModel(): Location {
+    return Location(
+        id = id,
+        longitude = longitude,
+        latitude = latitude,
+        tripID = tripID
+    )
+}
+
+/**
+ * The versions of the above functions that handles a collection
+ */
+fun Location.asDatabaseEntity(): LocationEntity{
+    return LocationEntity(
+        id = id,
+        longitude = longitude,
+        latitude = latitude,
+        tripID = tripID
+    )
+}
+
+
