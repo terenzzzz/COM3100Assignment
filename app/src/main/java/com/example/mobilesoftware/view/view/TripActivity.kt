@@ -17,6 +17,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.View.VISIBLE
 import androidx.activity.result.PickVisualMediaRequest
@@ -26,6 +27,7 @@ import androidx.core.app.ActivityCompat
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.databinding.ActivityTripBinding
 import com.example.mobilesoftware.view.dataParse.Weather
+import com.example.mobilesoftware.view.service.SensorService
 import com.example.mobilesoftware.view.viewmodels.TripViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -38,6 +40,7 @@ import com.squareup.picasso.Picasso
 import okhttp3.*
 import java.io.IOException
 import java.util.*
+import kotlin.math.log
 
 
 class TripActivity : AppCompatActivity(), OnMapReadyCallback{
@@ -102,6 +105,10 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         setContentView(binding.root)
         binding.viewModel = myViewModel
 
+        Intent(this,SensorService::class.java).apply {
+            startService(this)
+        }
+
         //        Add map
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -113,6 +120,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
                 for (location in locationResult.locations){
+                    Log.d("Testing", "Location: ${location.latitude}, ${location.longitude}")
                     if (startLocation==null){
                         startLocation = location
                         lastLocation = location
