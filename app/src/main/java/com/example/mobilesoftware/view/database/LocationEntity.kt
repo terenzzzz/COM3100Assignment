@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "locations", indices=[Index(value=["id", "trip_title"])])
+@Entity(tableName = "locations", indices=[Index(value=["id","tripID"])])
 data class LocationEntity (
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name="longitude") var longitude: String,

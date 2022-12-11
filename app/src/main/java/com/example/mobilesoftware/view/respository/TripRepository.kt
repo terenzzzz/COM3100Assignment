@@ -7,6 +7,7 @@ import com.example.mobilesoftware.view.database.LocationDao
 import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.database.TripDao
 import com.example.mobilesoftware.view.database.TripEntity
+import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.model.TripElement
 import kotlinx.coroutines.flow.Flow
@@ -73,8 +74,8 @@ class TripRepository(private val tripDao: TripDao,private val locationDao: Locat
      */
 
     @WorkerThread
-    suspend fun insertLocation(location: Location) {
-        locationDao.insert(location.asDatabaseEntity())
+    suspend fun insertLocation(location: Location): Int {
+        return locationDao.insert(location.asDatabaseEntity()).toInt()
     }
 
     suspend fun updateLocationTripID(lid: Int, tid: Int){
