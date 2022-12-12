@@ -1,7 +1,6 @@
 package com.example.mobilesoftware.view.view
 
 import android.Manifest
-import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -20,6 +19,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ServiceCompat.stopForeground
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.databinding.ActivityTripBinding
 import com.example.mobilesoftware.view.dataParse.Weather
@@ -45,8 +45,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var binding: ActivityTripBinding
 
     //    Location
+    private val PERMISSION_LOCATION_GPS:Int = 1
     private var lastLocation: Location? = null
     private var headMarker:Marker? = null
+
+    // Broadcast
+    private lateinit var receiver: BroadcastReceiver
 
 //    temperature & pressure
     private lateinit var sensorManager: SensorManager
@@ -93,7 +97,11 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         setContentView(binding.root)
         binding.viewModel = myViewModel
 
-        callService()
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+            callService()
+        }
 
         //        Set data
         val title = intent.getStringExtra("title")
@@ -129,7 +137,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         pressureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
         sensorManager.registerListener(pressureCallback,pressureSensor,20000)
 
-        val receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 // Update the UI
                 val latitude = intent.getStringExtra("latitude")
@@ -195,11 +203,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
 
         binding.stop.setOnClickListener {
-            // Do some work here
+            stopService()
+
             myViewModel.returnTitle()
                 ?.let { myViewModel.insertTrip(it,myViewModel.returnStartTime(),myViewModel.returnDuration().toString()) }
             TripListActivity.startFn(this)
-            this.finish()
+            finish()
         }
     }
 
@@ -216,6 +225,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         sensorManager.registerListener(pressureCallback,temperatureSensor,20000)
     }
 
+    override fun onDestroy() {
+        Log.d("TripActivity", "onDestroy: ")
+        super.onDestroy()
+        unregisterReceiver(receiver)
+    }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -225,6 +240,13 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         Intent(this, SensorService::class.java).apply {
             startService(this)
         }
+    }
+
+    private fun stopService(){
+        Intent(this, SensorService::class.java).apply {
+            stopService(this)
+        }
+
     }
 
     private fun addMarker(latitude:Double,longitude:Double){

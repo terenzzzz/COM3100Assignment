@@ -56,18 +56,21 @@
         </activity>
         <activity
             android:name="com.example.mobilesoftware.view.view.ImageListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false"
             android:label="ImageListAct" />
         <activity
             android:name="com.example.mobilesoftware.view.view.NewTripActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name="com.example.mobilesoftware.view.view.ShowImageActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false"
             android:label="ShowImageActivity" />
         <activity
             android:name="com.example.mobilesoftware.view.view.CameraActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -75,6 +78,7 @@
         </activity>
         <activity
             android:name=".view.view.TripListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true"
             android:label="Trip List">
             <intent-filter>

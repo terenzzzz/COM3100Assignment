@@ -11,6 +11,7 @@ import android.location.Location
 import android.os.Build
 import android.os.Looper
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
@@ -53,6 +54,9 @@ class SensorService : LifecycleService() {
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         Log.d("service", "fusedLocationClient: init")
+
+
+
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             var locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,
@@ -62,6 +66,12 @@ class SensorService : LifecycleService() {
             fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback, Looper.getMainLooper())
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onDestroy() {
+        Log.d("service", "onDestroy: ")
+        super.onDestroy()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     private fun createPendingIntent(): PendingIntent? {
@@ -97,33 +107,3 @@ class SensorService : LifecycleService() {
         }
     }
 }
-
-//        GetLocation
-//        locationCallback = object : LocationCallback(){
-//            override fun onLocationResult(locationResult: LocationResult) {
-//                locationResult ?: return
-//                for (location in locationResult.locations){
-//                    Log.d("Testing", "Location: ${location.latitude}, ${location.longitude}")
-//                    if (startLocation==null){
-//                        startLocation = location
-//                        lastLocation = location
-//                        addMarker(location.latitude,location.longitude)
-//                        getWeather(location.latitude,location.longitude)
-//                    }
-//
-//                    drawLine(lastLocation,location)
-//                    addDot(location.latitude,location.longitude)
-//                    lastLocation = location
-//                }
-//                myViewModel.setLocation(lastLocation.latitude.toString(),lastLocation.longitude.toString())
-//                myViewModel.insertLocation(lastLocation.latitude.toString(),lastLocation.longitude.toString())
-//            }
-//        }
-//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-//        Timer().schedule(object : TimerTask() {
-//            override fun run() {
-//                number++
-//                Log.d("service", "run: ${number}")
-//            }
-//        }, 0, 1000)
