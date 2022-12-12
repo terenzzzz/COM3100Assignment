@@ -13,6 +13,7 @@ import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
 import java.time.LocalDate
+import java.util.concurrent.Flow
 
 /**
  * The repository is instantiated in the ImageApplication class
@@ -21,6 +22,8 @@ import java.time.LocalDate
  * default constructor in this implementation
  */
 class ImageRepository(private val imageDao: ImageDao,private val locationDao: LocationDao) {
+
+    var locations: LiveData<List<LocationEntity>> = locationDao.getLocationsByTripID(-1).asLiveData()
 
     // The ViewModel will observe this Flow
     // Room will handle executing this on a thread
@@ -90,8 +93,8 @@ class ImageRepository(private val imageDao: ImageDao,private val locationDao: Lo
      * Function to get all locations relating to the tripID entered for the show image activity
      */
 
-    fun getLocationsByTripID(tid: Int): List<Location> {
-        return locationDao.getLocationsByTripID(tid).asLocDatabaseEntities()
+    fun getLocationsByTripID(tid: Int) {
+        locations = locationDao.getLocationsByTripID(tid).asLiveData()
     }
 }
 

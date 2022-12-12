@@ -25,15 +25,16 @@ import com.example.mobilesoftware.view.model.TripElement
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-// Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
-// the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
+/**
+ * TripListAcitvity uses TripAppCompatAcitvity in order to inherit the functionality of its
+ * related repistory and conects the acitivty to its related ViewModel in a simpler manner
+ */
 class TripListActivity : TripAppCompatActivity() {
     private val NUMBER_OF_COLUMNS = 1
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TripAdapter
     private var adapterData: MutableList<Image>? = null
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_triplist)

@@ -15,7 +15,7 @@ import java.time.LocalDate
  * tasks can continue through configuration changes and deliver results after Fragment or Activity
  * is available.
  *
- * @param repository - data access is through the repository.
+ * @param triprepository - data access is through the repository.
  */
 class TripListViewModel(private val triprepository: TripRepository, private val applicationContext: Application) : ViewModel() {
 
@@ -58,20 +58,6 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
             title = title,
             date = date,
             time = time)
-    }
-
-    /**
-     * Launching a new coroutine to UPDATE an Image object in a non-blocking way
-     */
-    fun update(trip: TripElement) = viewModelScope.launch {
-        triprepository.update(trip)
-    }
-
-    /**
-     * Launching a new coroutine to DELETE an Image object in a non-blocking way
-     */
-    fun delete(trip: TripElement) = viewModelScope.launch {
-        triprepository.delete(trip)
     }
 
 }

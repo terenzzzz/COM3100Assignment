@@ -5,6 +5,10 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Entity used to handle the trips in the system
+ */
+
 @Entity(tableName = "trips", indices=[Index(value=["id", "trip_title"])])
 data class TripEntity (
     @PrimaryKey(autoGenerate = true) var id: Int = 0,

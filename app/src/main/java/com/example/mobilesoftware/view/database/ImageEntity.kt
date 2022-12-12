@@ -5,6 +5,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Entity used to handle the images in the image table
+ * All columns are pretty self-explanatory
+ */
+
 @Entity(tableName = "image", indices=[Index(value=["id", "image_title"])])
 data class ImageEntity (
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
