@@ -10,7 +10,7 @@
     tools:showIn="@layout/activity_main_triplist">
 
     <androidx.appcompat.widget.SwitchCompat
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +21,8 @@
         android:id="@+id/rctriplist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="10dp">
     </androidx.recyclerview.widget.RecyclerView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

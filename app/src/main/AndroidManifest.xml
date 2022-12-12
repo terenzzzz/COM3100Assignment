@@ -2,27 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!--    Location Permission-->
+    <!-- Location Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-    <!--Internet Permission-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Internet Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.camera.any" />
+
+<!--    Foreground Service-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
-
-
     <application
+        android:name="com.example.mobilesoftware.view.ImageApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -31,8 +34,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileSoftware"
-        tools:targetApi="31"
-        android:name="com.example.mobilesoftware.view.ImageApplication">
+        tools:targetApi="31">
+        <service
+            android:name=".view.service.SensorService"
+            android:foregroundServiceType="location"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -41,6 +48,7 @@
         <activity
             android:name=".view.view.TripActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
@@ -48,19 +56,21 @@
         </activity>
         <activity
             android:name="com.example.mobilesoftware.view.view.ImageListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false"
-            android:label="ImageListAct"/>
+            android:label="ImageListAct" />
         <activity
             android:name="com.example.mobilesoftware.view.view.NewTripActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true">
-        </activity>
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name="com.example.mobilesoftware.view.view.ShowImageActivity"
-            android:exported="True"
-            android:label="ShowImageActivity"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="false"
+            android:label="ShowImageActivity" />
         <activity
             android:name="com.example.mobilesoftware.view.view.CameraActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -68,6 +78,7 @@
         </activity>
         <activity
             android:name=".view.view.TripListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true"
             android:label="Trip List">
             <intent-filter>
@@ -75,6 +86,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
