@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface LocationDao {
     // suspend keyword not needed with the use of Flow
     @Query("Select * from locations Where tripID=:tid")
-    fun getLocationsByTripID(tid : Int): Flow<List<LocationEntity>>
+    fun getLocationsByTripID(tid : Int): List<LocationEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(tripEntity: LocationEntity): Long

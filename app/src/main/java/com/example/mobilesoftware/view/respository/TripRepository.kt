@@ -82,11 +82,6 @@ class TripRepository(private val tripDao: TripDao,private val locationDao: Locat
         locationDao.updateLocationsTripID(lid,tid)
     }
 
-    suspend fun getLocationsByTripID(tid: Int): Flow<List<LocationEntity>> {
-        return locationDao.getLocationsByTripID(tid)
-    }
-
-
 }
 
 
@@ -135,18 +130,6 @@ fun List<TripElement>.asDatabaseEntities(): List<TripEntity>{
             time = it.time
         )
     }
-}
-
-/***
- * Function to map Location database entities to the domain model
- */
-fun LocationEntity.asDomainModel(): Location {
-    return Location(
-        id = id,
-        longitude = longitude,
-        latitude = latitude,
-        tripID = tripID
-    )
 }
 
 /**
