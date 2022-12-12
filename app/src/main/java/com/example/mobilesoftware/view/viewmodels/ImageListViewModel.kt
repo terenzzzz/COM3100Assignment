@@ -4,12 +4,14 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
+import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.respository.ImageRepository
 import com.example.mobilesoftware.view.respository.TripRepository
 import com.example.mobilesoftware.view.respository.asDomainModel
 import com.example.mobilesoftware.view.respository.asDomainModels
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -22,6 +24,7 @@ import java.time.LocalDate
  * @param repository - data access is through the repository.
  */
 class ImageListViewModel(private val imgrepository: ImageRepository,private val tripRepository: TripRepository,private val applicationContext: Application) : ViewModel() {
+
     var trips: LiveData<List<TripElement>> = Transformations.map(tripRepository.trips){
         it.asDomainModels(applicationContext)
     } as MutableLiveData<List<TripElement>>
@@ -36,6 +39,9 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
     var images: LiveData<List<Image>> = Transformations.map(imgrepository.images){
         it.asDomainModels(applicationContext)
     } as MutableLiveData<List<Image>>
+
+
+
     /**
      * Retrieves a single Image object for the specified id
      */

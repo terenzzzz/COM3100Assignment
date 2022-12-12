@@ -10,6 +10,7 @@ import com.example.mobilesoftware.view.database.ImageDao
 import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
 import java.time.LocalDate
+import java.util.concurrent.Flow
 
 /**
  * The repository is instantiated in the ImageApplication class

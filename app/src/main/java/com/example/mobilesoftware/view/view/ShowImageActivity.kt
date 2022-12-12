@@ -21,6 +21,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.mobilesoftware.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -46,6 +49,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         // intent is a property of the activity. intent.extras returns any data that was pass
         // along with the intent.
         val bundle: Bundle? = intent.extras
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.fl_map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         if (bundle!= null) {
@@ -60,11 +64,21 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         val image = it
                         // Display the model's data in the view. This is a lot of back and forth!
                         loadImageView(image.imagePath.toString())
+                        //imageViewModel.filter(image.tripID!!,0)
+                        //val photolist: MutableLiveData<List<Image>> = imageViewModel.images as MutableLiveData<List<Image>>
+
+                        println ("sizeeeeeeeeeeeeeeeeeeee")
+
+
+                        //println(photolist.value!!.size)
+                        //println(photos[0].toString())
+                        //println(imageViewModel.images.toString())
                         binding.editTextTitle.setText(image.title)
                         binding.editTextDescription.setHint("Enter Description")
                         image.description?.isNotEmpty().apply {
                             binding.editTextDescription.setText(image.description)
                         }
+                        // onClick listener for the update button
                         binding.buttonSave.setOnClickListener {
                             onUpdateButtonClickListener(it, image, position)
                         }
@@ -77,7 +91,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                             }
 
                         }
-                        binding.pressure.text = image.pressure+ " HPa"
+                        binding.pressure.text = image.pressure+ " hpa"
                         binding.temperature.text=image.temperature
                         binding.date.text=image.date.toString()
 
@@ -86,8 +100,20 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
 
 
                         addMarker(image.latitude!!.toDouble(),image.longitude!!.toDouble())
+                        imageViewModel.filter(image.tripID!!,0)
 
-                        // onClick listener for the update button
+                        // start observing the date from the ViewModel
+                        imageViewModel.images.observe(this) {
+
+
+                            val theImages= it
+                            println("helloooooooo"+theImages[0].pressure)
+                            for (i in theImages){
+                                println(i.title)
+                            }
+                        }
+
+
 
 
                     }
