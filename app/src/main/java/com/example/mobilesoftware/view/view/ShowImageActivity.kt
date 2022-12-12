@@ -119,7 +119,10 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                                 }
                             }
                         }
-                        val locations=imageViewModel.getLocationsByTripID(image.tripID!!)
+                        //val locations=imageViewModel.getLocationsByTripID(image.tripID!!)
+                        //for (location in locations){
+                            //println("location dddddddddd"+location.latitude)
+                        //}
 
 
 
