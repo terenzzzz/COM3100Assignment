@@ -111,6 +111,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                             val theImages= it
                             println("helloooooooo"+theImages[0].pressure)
                             for (i in theImages){
+                                println("i: $i")
                                 if (i.id==imageId){
                                 addMarkerCurrent(i.latitude!!.toDouble(),i.longitude!!.toDouble())
                                 println(i.title)}

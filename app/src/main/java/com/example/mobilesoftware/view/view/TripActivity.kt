@@ -1,9 +1,11 @@
 package com.example.mobilesoftware.view.view
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.*
@@ -23,7 +25,6 @@ import com.example.mobilesoftware.databinding.ActivityTripBinding
 import com.example.mobilesoftware.view.dataParse.Weather
 import com.example.mobilesoftware.view.service.SensorService
 import com.example.mobilesoftware.view.viewmodels.TripViewModel
-import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -42,15 +43,10 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var mMap: GoogleMap
     private val client = OkHttpClient()
     private lateinit var binding: ActivityTripBinding
-    private var weatherIconShow = false
-
 
     //    Location
     val PERMISSION_LOCATION_GPS:Int = 1
-    private var startLocation: Location? =null
-    private lateinit var lastLocation: Location
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationCallback: LocationCallback
+    private var lastLocation: Location? = null
     private var headMarker:Marker? = null
 
 //    temperature & pressure
@@ -60,7 +56,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     private var pressureSensor: Sensor?=null
     private lateinit var pressureCallback: SensorEventCallback
     private var tripID: Int = -1
-
 
 
     companion object {
@@ -78,7 +73,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             this@TripActivity.contentResolver.takePersistableUriPermission(uri, flag)
 
             myViewModel.insertimage(uri)
-            this.addPicMarker(lastLocation.latitude,lastLocation.longitude)
+            lastLocation?.let { it1 -> this.addPicMarker(it1.latitude, it1.longitude) }
         }
     }
 
@@ -88,7 +83,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         photo_uri?.let{
             val uri = Uri.parse(photo_uri)
             myViewModel.insertimage(uri)
-            this.addPicMarker(lastLocation.latitude,lastLocation.longitude)
+            lastLocation?.let { it1 -> this.addPicMarker(it1.latitude, it1.longitude) }
         }
     }
 
@@ -98,6 +93,20 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         binding = ActivityTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = myViewModel
+
+        callService()
+
+        // Permissiont request
+        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_LOCATION_GPS
+            )
+        }
+        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_LOCATION_GPS
+            )
+        }
 
         //        Set data
         val title = intent.getStringExtra("title")
@@ -110,28 +119,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-//        GetLocation
-        locationCallback = object : LocationCallback(){
-            override fun onLocationResult(locationResult: LocationResult) {
-                locationResult ?: return
-                for (location in locationResult.locations){
-                    Log.d("Testing", "Location: ${location.latitude}, ${location.longitude}")
-                    if (startLocation==null){
-                        startLocation = location
-                        lastLocation = location
-                        addMarker(location.latitude,location.longitude)
-                        getWeather(location.latitude,location.longitude)
-                    }
-
-                    drawLine(lastLocation,location)
-                    addDot(location.latitude,location.longitude)
-                    lastLocation = location
-                }
-                myViewModel.setLocation(lastLocation.latitude.toString(),lastLocation.longitude.toString())
-                myViewModel.insertLocation(lastLocation.latitude.toString(),lastLocation.longitude.toString())
-            }
-        }
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
 //        Get Temperature
         temperatureCallback = object : SensorEventCallback(){
@@ -155,7 +142,37 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         pressureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
         sensorManager.registerListener(pressureCallback,pressureSensor,20000)
 
+        val receiver: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                // Update the UI
+                val latitude = intent.getStringExtra("latitude")
+                val longitude = intent.getStringExtra("longitude")
+                val location = Location("providerName")
+                if (latitude != null) {
+                    location.latitude = latitude.toDouble()
+                }
+                if (longitude != null) {
+                    location.longitude = longitude.toDouble()
+                }
 
+                if (lastLocation != null){
+                    drawLine(lastLocation!!,location)
+                    addDot(location.latitude,location.longitude)
+                }else{
+                    lastLocation = location
+                    getWeather(lastLocation!!.latitude, lastLocation!!.longitude)
+                    addMarker(lastLocation!!.latitude, lastLocation!!.longitude)
+                    addDot(lastLocation!!.latitude, lastLocation!!.longitude)
+                }
+                lastLocation = location
+
+                Log.d("TripActivity", "latitude: $latitude, longitude: $longitude")
+                // Use the data to update the UI
+            }
+        }
+
+        val filter = IntentFilter("update-ui")
+        registerReceiver(receiver, filter)
 
 
         Timer().schedule(object : TimerTask() {
@@ -166,7 +183,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                 }
             }
         }, 0,1000)
-
 
         binding.backIcon.setOnClickListener { view ->
             // Do some work here
@@ -200,7 +216,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     override fun onPause() {
         super.onPause()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
         sensorManager.unregisterListener(temperatureCallback)
         sensorManager.unregisterListener(pressureCallback)
     }
@@ -208,40 +223,19 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onResume() {
         Log.d("TripActivity", "onResume: ")
         super.onResume()
-        refreshLatLon()
         sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
         sensorManager.registerListener(pressureCallback,temperatureSensor,20000)
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun refreshLatLon(){
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(
-                this@TripActivity,
-                arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                ),
-                PERMISSION_LOCATION_GPS
-            )
-        }else{
-            // Call Service
-            Intent(this, SensorService::class.java).apply {
-                startService(this)
-            }
-
-            var locationRequest = LocationRequest.Builder(
-                Priority.PRIORITY_HIGH_ACCURACY,
-                10000
-            ).build()
-//        var locationRequest = LocationRequest.create()
-            fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback, Looper.getMainLooper())
-        }
     }
 
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+    }
+
+    private fun callService(){
+        Intent(this, SensorService::class.java).apply {
+            startService(this)
+        }
     }
 
     private fun addMarker(latitude:Double,longitude:Double){
@@ -281,7 +275,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private fun getWeather(latitude:Double,longitude:Double){
         var url = "https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=bb01585d3dafe1d3b04332150c924d32&units=metric"
-
         val request = Request.Builder()
             .url(url)
             .build()
@@ -294,9 +287,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             override fun onResponse(call: Call, response: Response) {
                 response.use {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-//                    for ((name, value) in response.headers) {
-//                        println("$name: $value")
-//                    }
                     val gson = Gson() // Or use new GsonBuilder().create();
                     val parsed: Weather = gson.fromJson(response.body!!.string(), Weather::class.java)
                     val weatherIcon = "https://openweathermap.org/img/wn/${parsed.weather?.get(0)?.icon}@2x.png"

@@ -1,25 +1,22 @@
 package com.example.mobilesoftware.view.service
 
 import android.Manifest
-import android.app.*
-import android.content.Context
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.location.Location
-import android.os.Binder
 import android.os.Build
-import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.view.view.TripActivity
 import com.google.android.gms.location.*
-import java.util.*
 
 class SensorService : LifecycleService() {
     private val CHANNEL_ID = "notification channel id"
@@ -46,6 +43,10 @@ class SensorService : LifecycleService() {
                 p0?:return
                 for (location in p0.locations){
                     lastLocation = location
+                    val intent = Intent("update-ui")
+                    intent.putExtra("latitude", lastLocation.latitude.toString())
+                    intent.putExtra("longitude", lastLocation.longitude.toString())
+                    sendBroadcast(intent)
                     Log.d("service", "lastLocation: ${location.latitude},${location.longitude} ")
                 }
             }
@@ -60,15 +61,8 @@ class SensorService : LifecycleService() {
             Log.d("service", "fusedLocationClient: requestLocationUpdates")
             fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback, Looper.getMainLooper())
         }
-
-
         return super.onStartCommand(intent, flags, startId)
     }
-
-    override fun onBind(intent: Intent): IBinder? {
-        return super.onBind(intent)
-    }
-
 
     private fun createPendingIntent(): PendingIntent? {
         val pendingIntent = PendingIntent.getActivity(
@@ -103,6 +97,29 @@ class SensorService : LifecycleService() {
         }
     }
 }
+
+//        GetLocation
+//        locationCallback = object : LocationCallback(){
+//            override fun onLocationResult(locationResult: LocationResult) {
+//                locationResult ?: return
+//                for (location in locationResult.locations){
+//                    Log.d("Testing", "Location: ${location.latitude}, ${location.longitude}")
+//                    if (startLocation==null){
+//                        startLocation = location
+//                        lastLocation = location
+//                        addMarker(location.latitude,location.longitude)
+//                        getWeather(location.latitude,location.longitude)
+//                    }
+//
+//                    drawLine(lastLocation,location)
+//                    addDot(location.latitude,location.longitude)
+//                    lastLocation = location
+//                }
+//                myViewModel.setLocation(lastLocation.latitude.toString(),lastLocation.longitude.toString())
+//                myViewModel.insertLocation(lastLocation.latitude.toString(),lastLocation.longitude.toString())
+//            }
+//        }
+//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
 //        Timer().schedule(object : TimerTask() {
 //            override fun run() {
