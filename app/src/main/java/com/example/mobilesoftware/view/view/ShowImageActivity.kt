@@ -112,10 +112,12 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                             }
                         }
                         imageViewModel.getLocationsByTripID(image.tripID!!)
+                        println("iddddddddddd"+image.tripID)
                         imageViewModel.locations.observe(this){
                             val locations=it
                             for (location in locations){
-                                println("location dddddddddd"+location.latitude)
+                                println("locationnnnnnnnnnnn"+location.tripID)
+                                addMarkerLocation(location.latitude.toDouble(),location.longitude.toDouble())
 
 
                         }
@@ -133,9 +135,9 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
     }
-    private fun addMarkerLocation(latitude:Double,longitude:Double,imageTitle:String){
+    private fun addMarkerLocation(latitude:Double,longitude:Double){
         val point = LatLng(latitude, longitude)
-        mMap.addMarker(MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource((R.drawable.blue_dot))))
+        mMap.addMarker(MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
     }
     private fun addMarker(latitude:Double,longitude:Double,imageTitle:String){
         val point = LatLng(latitude, longitude)
