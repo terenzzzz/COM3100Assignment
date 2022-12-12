@@ -10,6 +10,6 @@ class ImageApplication: Application() {
     // using by lazy again,which ensures either are created until they are
     // needed (i.e. referenced for the first time).
     val database: AppDatabase by lazy { AppDatabase.getInstance(this) }
-    val imgrepository: ImageRepository by lazy { ImageRepository(database.imageDao()) }
-    val triprepository: TripRepository by lazy { TripRepository(database.tripDao()) }
+    val imgrepository: ImageRepository by lazy { ImageRepository(database.imageDao(),database.locationDao()) }
+    val triprepository: TripRepository by lazy { TripRepository(database.tripDao(),database.locationDao()) }
 }

@@ -8,12 +8,14 @@ import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.view.database.ImageEntity
+import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.respository.ImageRepository
 import com.example.mobilesoftware.view.respository.asDomainModel
 import com.example.mobilesoftware.view.respository.asDomainModels
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -90,6 +92,14 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
      */
     fun delete(image: Image) = viewModelScope.launch {
         imgrepository.delete(image)
+    }
+
+    /**
+     * Get all the relevant locations to be used to show the path taken in the
+     * trip that is going to be shown in the ShowImageActivity
+     */
+    fun getLocationsByTripID(tid: Int): List<LocationEntity> {
+        return imgrepository.getLocationsByTripID(tid)
     }
 
 }

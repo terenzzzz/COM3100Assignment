@@ -125,6 +125,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                     lastLocation = location
                 }
                 myViewModel.setLocation(lastLocation.latitude.toString(),lastLocation.longitude.toString())
+                myViewModel.insertLocation(lastLocation.latitude.toString(),lastLocation.longitude.toString())
             }
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)

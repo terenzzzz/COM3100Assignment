@@ -5,12 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ImageEntity::class,TripEntity::class], version = 9, exportSchema = false)
+@Database(entities = [ImageEntity::class,TripEntity::class,LocationEntity::class], version = 12, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun imageDao(): ImageDao
 
     abstract fun tripDao(): TripDao
+
+    abstract fun locationDao(): LocationDao
 
     companion object{
         private val DATABASE_NAME = "SoftwareAssignment"
