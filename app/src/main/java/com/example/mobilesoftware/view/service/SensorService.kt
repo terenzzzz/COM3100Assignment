@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -79,7 +80,7 @@ class SensorService : LifecycleService() {
             this,
             0,
             Intent(this, TripActivity::class.java),
-            0
+            FLAG_IMMUTABLE
         )
         return pendingIntent
     }
