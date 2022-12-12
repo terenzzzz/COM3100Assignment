@@ -9,10 +9,7 @@ import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.model.TripElement
-import com.example.mobilesoftware.view.respository.ImageRepository
-import com.example.mobilesoftware.view.respository.TripRepository
-import com.example.mobilesoftware.view.respository.asDomainModel
-import com.example.mobilesoftware.view.respository.asDomainModels
+import com.example.mobilesoftware.view.respository.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -23,7 +20,9 @@ import java.time.LocalDate
  * tasks can continue through configuration changes and deliver results after Fragment or Activity
  * is available.
  *
- * @param repository - data access is through the repository.
+ * @param imgrepository - data access is through the image repository.
+ * @param tripRepository - data access is through the trip repository.
+ * @param applicationContext - provides context of application to points of the app that require it
  */
 class ImageListViewModel(private val imgrepository: ImageRepository,private val tripRepository: TripRepository,private val applicationContext: Application) : ViewModel() {
 
@@ -40,6 +39,10 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
     // that will be observed fom the view
     var images: LiveData<List<Image>> = Transformations.map(imgrepository.images){
         it.asDomainModels(applicationContext)
+    } as MutableLiveData<List<Image>>
+
+    var locations: LiveData<List<Image>> = Transformations.map(imgrepository.locations){
+        it.asLocDatabaseEntities()
     } as MutableLiveData<List<Image>>
 
 
@@ -104,11 +107,10 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
     }
 
     /**
-     * Get all the relevant locations to be used to show the path taken in the
-     * trip that is going to be shown in the ShowImageActivity
+     * Update the locations being used
      */
-    fun getLocationsByTripID(tid: Int): List<Location> {
-        return imgrepository.getLocationsByTripID(tid)
+    fun getLocationsByTripID(tripId: Int) = viewModelScope.launch {
+        imgrepository.getLocationsByTripID(tripId)
     }
 
 }
