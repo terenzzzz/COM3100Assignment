@@ -1,21 +1,16 @@
 package com.example.mobilesoftware.view.viewmodels
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
-import androidx.constraintlayout.widget.ConstraintSet.Transform
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
-import com.example.mobilesoftware.R
-import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.respository.ImageRepository
+import com.example.mobilesoftware.view.respository.TripRepository
 import com.example.mobilesoftware.view.respository.asDomainModel
 import com.example.mobilesoftware.view.respository.asDomainModels
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 /**
@@ -26,8 +21,16 @@ import java.time.LocalDate
  *
  * @param repository - data access is through the repository.
  */
-class ImageListViewModel(private val imgrepository: ImageRepository, private val applicationContext: Application) : ViewModel() {
-
+class ImageListViewModel(private val imgrepository: ImageRepository,private val tripRepository: TripRepository,private val applicationContext: Application) : ViewModel() {
+    var trips: LiveData<List<TripElement>> = Transformations.map(tripRepository.trips){
+        it.asDomainModels(applicationContext)
+    } as MutableLiveData<List<TripElement>>
+    /**
+     * Retrieves a single Trip Element object for the specified id
+     */
+    fun getTrip(id: Int) : LiveData<TripElement> = Transformations.map(tripRepository.getTrip(id)){
+        it.asDomainModel(applicationContext)
+    }
     // Receive the Flow of ImageEntity data from the repository, but transform to the LiveData of Images
     // that will be observed fom the view
     var images: LiveData<List<Image>> = Transformations.map(imgrepository.images){
@@ -96,10 +99,10 @@ class ImageListViewModel(private val imgrepository: ImageRepository, private val
 
 // Extends the ViewModelProvider.Factory allowing us to control the viewmodel creation
 // and provide the right parameters
-class ImageViewModelFactory(private val repository: ImageRepository,  private val applicationContext: Application) : ViewModelProvider.Factory {
+class ImageViewModelFactory(private val repository: ImageRepository, private val tripRepository: TripRepository,  private val applicationContext: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ImageListViewModel::class.java)) {
-            return ImageListViewModel(repository, applicationContext) as T
+            return ImageListViewModel(repository, tripRepository, applicationContext) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

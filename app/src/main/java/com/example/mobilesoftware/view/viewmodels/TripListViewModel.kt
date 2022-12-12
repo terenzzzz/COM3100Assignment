@@ -1,22 +1,12 @@
 package com.example.mobilesoftware.view.viewmodels
 
 import android.app.Application
-import android.content.Context
-import android.net.Uri
-import androidx.constraintlayout.widget.ConstraintSet.Transform
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
-import com.example.mobilesoftware.R
-import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
-import com.example.mobilesoftware.view.respository.ImageRepository
 import com.example.mobilesoftware.view.respository.TripRepository
-import com.example.mobilesoftware.view.respository.asDomainModel
 import com.example.mobilesoftware.view.respository.asDomainModels
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.sql.Time
 import java.time.LocalDate
 
 /**
@@ -32,7 +22,7 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
     // Receive the Flow of ImageEntity data from the repository, but transform to the LiveData of Images
     // that will be observed fom the view
     var trips: LiveData<List<TripElement>> = Transformations.map(triprepository.trips){
-        it.asDomainModels()
+        it.asDomainModels(applicationContext)
     } as MutableLiveData<List<TripElement>>
 
     /**
@@ -41,7 +31,7 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
     fun sorting(setting: Int){
         triprepository.sorting(setting)
         trips = Transformations.map(triprepository.trips){
-            it.asDomainModels()
+            it.asDomainModels(applicationContext)
         } as MutableLiveData<List<TripElement>>
     }
 

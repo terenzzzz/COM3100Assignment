@@ -26,7 +26,7 @@
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:textSize="30sp"
-                android:text="hello"/>
+                android:text=" "/>
                 <!--android:text='@{viewModel.title}'-->
         </androidx.appcompat.widget.Toolbar>
         <ScrollView

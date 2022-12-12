@@ -1,6 +1,6 @@
 package com.example.mobilesoftware.view.view
 
-import ShowImageViewModel
+
 
 import android.content.ContentUris
 import android.content.Context
@@ -22,9 +22,14 @@ import kotlinx.coroutines.withContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.example.mobilesoftware.R
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import java.util.*
+import kotlin.concurrent.schedule
 
 class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityShowImageBinding
@@ -41,13 +46,15 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         // intent is a property of the activity. intent.extras returns any data that was pass
         // along with the intent.
         val bundle: Bundle? = intent.extras
-
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.fl_map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
         if (bundle!= null) {
             val imageId = bundle.getInt("id")
             val position = bundle.getInt("position")
 
             if (imageId > 0) {
                 // Observe the image data, only one will be received
+
                 imageViewModel.getImage(imageId).observe(this){
                     if(it != null){
                         val image = it
@@ -58,23 +65,30 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         image.description?.isNotEmpty().apply {
                             binding.editTextDescription.setText(image.description)
                         }
+                        binding.buttonSave.setOnClickListener {
+                            onUpdateButtonClickListener(it, image, position)
+                        }
+                        val trip=imageViewModel.getTrip(image.tripID!!)
+                        trip.observe(this){
+                            if(it !=null){
+                                val theTrip= it
+                                println (theTrip.title)
+                                binding.tripTitle.text=theTrip.title
+                            }
+
+                        }
                         binding.pressure.text = image.pressure+ " HPa"
                         binding.temperature.text=image.temperature
                         binding.date.text=image.date.toString()
 
                         println(image.latitude)
                         println(image.longitude)
-                        println(image.tripID)
 
-                        val manager: FragmentManager = supportFragmentManager
-                        val mapFragment = manager.findFragmentById(R.id.fl_map) as SupportMapFragment
-                        mapFragment.getMapAsync(this)
 
+                        addMarker(image.latitude!!.toDouble(),image.longitude!!.toDouble())
 
                         // onClick listener for the update button
-                        binding.buttonSave.setOnClickListener {
-                            onUpdateButtonClickListener(it, image, position)
-                        }
+
 
                     }
                 }
@@ -83,6 +97,11 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+    }
+    private fun addMarker(latitude:Double,longitude:Double){
+        val point = LatLng(latitude, longitude)
+        mMap.addMarker(MarkerOptions().position(point))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
     /**
      * This function will either use the file path to load the image by default
