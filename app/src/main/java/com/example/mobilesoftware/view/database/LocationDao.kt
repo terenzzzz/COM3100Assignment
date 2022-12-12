@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.mobilesoftware.view.model.Location
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -16,7 +17,7 @@ interface LocationDao {
 
     // Get all locations relating to specific tripID
     @Query("Select * from locations Where tripID=:tid")
-    fun getLocationsByTripID(tid : Int): List<LocationEntity>
+    fun getLocationsByTripID(tid : Int): Flow<List<LocationEntity>>
 
     // Insert a location into table
     @Insert(onConflict = OnConflictStrategy.REPLACE)
