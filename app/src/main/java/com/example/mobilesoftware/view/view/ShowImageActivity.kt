@@ -67,7 +67,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         //imageViewModel.filter(image.tripID!!,0)
                         //val photolist: MutableLiveData<List<Image>> = imageViewModel.images as MutableLiveData<List<Image>>
 
-                        println ("sizeeeeeeeeeeeeeeeeeeee")
+                        
 
 
                         //println(photolist.value!!.size)
