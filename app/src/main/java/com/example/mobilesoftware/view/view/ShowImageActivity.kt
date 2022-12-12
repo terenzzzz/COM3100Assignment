@@ -28,6 +28,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.flow.Flow
@@ -67,7 +69,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         //imageViewModel.filter(image.tripID!!,0)
                         //val photolist: MutableLiveData<List<Image>> = imageViewModel.images as MutableLiveData<List<Image>>
 
-                        println ("sizeeeeeeeeeeeeeeeeeeee")
+
 
 
                         //println(photolist.value!!.size)
@@ -110,10 +112,17 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                             println("helloooooooo"+theImages[0].pressure)
                             for (i in theImages){
                                 if (i.id==imageId){
-                                addMarker(i.latitude!!.toDouble(),i.longitude!!.toDouble())
+                                addMarkerCurrent(i.latitude!!.toDouble(),i.longitude!!.toDouble())
                                 println(i.title)}
+                                else{
+                                    addMarker(i.latitude!!.toDouble(),i.longitude!!.toDouble(),i.title)
+                                }
                             }
                         }
+                        //val locations=imageViewModel.getLocationsByTripID(image.tripID!!)
+                        //for (location in locations){
+                            //println("location dddddddddd"+location.latitude)
+                        //}
 
 
 
@@ -126,9 +135,19 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
     }
-    private fun addMarker(latitude:Double,longitude:Double){
+    private fun addMarkerLocation(latitude:Double,longitude:Double,imageTitle:String){
         val point = LatLng(latitude, longitude)
-        mMap.addMarker(MarkerOptions().position(point))
+        mMap.addMarker(MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource((R.drawable.blue_dot))))
+    }
+    private fun addMarker(latitude:Double,longitude:Double,imageTitle:String){
+        val point = LatLng(latitude, longitude)
+        mMap.addMarker(MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(imageTitle))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
+    }
+
+    private fun addMarkerCurrent(latitude:Double,longitude:Double){
+        val point = LatLng(latitude, longitude)
+        mMap.addMarker(MarkerOptions().position(point).title("This Image"))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
     /**
