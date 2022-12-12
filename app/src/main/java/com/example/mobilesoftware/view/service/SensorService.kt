@@ -25,7 +25,6 @@ class SensorService : LifecycleService() {
     private val CHANNEL_ID = "notification channel id"
     private var number = 0
 
-    private val PERMISSION_LOCATION_GPS:Int = 1
     private lateinit var lastLocation: Location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback

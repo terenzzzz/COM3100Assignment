@@ -28,9 +28,6 @@ class NewTripActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.viewModel = myViewModel
 
-        Intent(this, SensorService::class.java).apply {
-            startService(this)
-        }
 
         Timer().schedule(object : TimerTask() {
             override fun run() {

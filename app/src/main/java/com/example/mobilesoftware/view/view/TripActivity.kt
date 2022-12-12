@@ -6,11 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventCallback
-import android.hardware.SensorManager
-import android.icu.number.NumberFormatter.with
 import android.hardware.*
 import android.location.Location
 import android.net.Uri
@@ -19,7 +14,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.View.VISIBLE
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -40,7 +34,6 @@ import com.squareup.picasso.Picasso
 import okhttp3.*
 import java.io.IOException
 import java.util.*
-import kotlin.math.log
 
 
 class TripActivity : AppCompatActivity(), OnMapReadyCallback{
@@ -105,11 +98,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         binding = ActivityTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = myViewModel
-
-        // Call service
-//        Intent(this,SensorService::class.java).apply {
-//            startService(this)
-//        }
 
         //        Set data
         val title = intent.getStringExtra("title")
@@ -220,19 +208,28 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onResume() {
         Log.d("TripActivity", "onResume: ")
         super.onResume()
-        binding.startTime.text = myViewModel.startTime.get()
         refreshLatLon()
         sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
         sensorManager.registerListener(pressureCallback,temperatureSensor,20000)
     }
 
-
-
     @SuppressLint("MissingPermission")
     private fun refreshLatLon(){
         if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION),PERMISSION_LOCATION_GPS)
+            ActivityCompat.requestPermissions(
+                this@TripActivity,
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                ),
+                PERMISSION_LOCATION_GPS
+            )
         }else{
+            // Call Service
+            Intent(this, SensorService::class.java).apply {
+                startService(this)
+            }
+
             var locationRequest = LocationRequest.Builder(
                 Priority.PRIORITY_HIGH_ACCURACY,
                 10000
