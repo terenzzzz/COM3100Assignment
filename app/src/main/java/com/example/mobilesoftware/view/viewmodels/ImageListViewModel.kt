@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.model.Image
+import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.respository.ImageRepository
 import com.example.mobilesoftware.view.respository.TripRepository
@@ -106,7 +107,7 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
      * Get all the relevant locations to be used to show the path taken in the
      * trip that is going to be shown in the ShowImageActivity
      */
-    fun getLocationsByTripID(tid: Int): List<LocationEntity> {
+    fun getLocationsByTripID(tid: Int): List<Location> {
         return imgrepository.getLocationsByTripID(tid)
     }
 
