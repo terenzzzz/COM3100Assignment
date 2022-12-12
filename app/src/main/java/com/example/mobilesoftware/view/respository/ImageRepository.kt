@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.asLiveData
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.database.ImageDao
@@ -12,8 +13,12 @@ import com.example.mobilesoftware.view.database.LocationDao
 import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import java.time.LocalDate
+import kotlin.coroutines.coroutineContext
 
 
 /**
@@ -24,11 +29,11 @@ import java.time.LocalDate
  */
 class ImageRepository(private val imageDao: ImageDao,private val locationDao: LocationDao) {
 
-    var locations: LiveData<List<LocationEntity>> = locationDao.getLocationsByTripID(-1).asLiveData()
-
     // The ViewModel will observe this Flow
     // Room will handle executing this on a thread
     var images: LiveData<List<ImageEntity>> = imageDao.getImages().asLiveData()
+
+    var locations: LiveData<List<LocationEntity>> = locationDao.getLocationsByTripID(-1).asLiveData()
 
     fun getImage(id: Int) : LiveData<ImageEntity>{
         return imageDao.getImage(id).asLiveData()
@@ -48,6 +53,14 @@ class ImageRepository(private val imageDao: ImageDao,private val locationDao: Lo
                 images = imageDao.getImagesByIDDesc(tripID).asLiveData()
             }
         }
+    }
+
+    /**
+     * Function to get all locations relating to the tripID entered for the show image activity
+     */
+
+    fun getLocationsByTripID(tid: Int){
+        locations = locationDao.getLocationsByTripID(tid).asLiveData()
     }
 
     @WorkerThread
@@ -90,13 +103,6 @@ class ImageRepository(private val imageDao: ImageDao,private val locationDao: Lo
         imageDao.delete(image.asDatabaseEntity())
     }
 
-    /**
-     * Function to get all locations relating to the tripID entered for the show image activity
-     */
-
-    fun getLocationsByTripID(tid: Int) {
-        locations = locationDao.getLocationsByTripID(tid).asLiveData()
-    }
 }
 
 
@@ -186,6 +192,15 @@ fun List<Image>.asDatabaseEntities(): List<ImageEntity>{
             date = it.date.toString()
         )
     }
+}
+
+fun LocationEntity.asLocDatabaseEntity(): Location{
+    return Location(
+            id = id,
+            longitude = longitude,
+            latitude = latitude,
+            tripID = tripID
+        )
 }
 
 fun List<LocationEntity>.asLocDatabaseEntities(): List<Location>{

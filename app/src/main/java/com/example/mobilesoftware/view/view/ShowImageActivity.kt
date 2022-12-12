@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.mobilesoftware.R
+import com.example.mobilesoftware.view.model.Location
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -57,10 +58,11 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         if (bundle!= null) {
             val imageId = bundle.getInt("id")
             val position = bundle.getInt("position")
+            val tripid = bundle.getInt("tripID")
 
             if (imageId > 0) {
-                // Observe the image data, only one will be received
-
+                // Observe the image data, only one will be receive
+                imageViewModel.getLocationsByTripID(tripid)
                 imageViewModel.getImage(imageId).observe(this){
                     if(it != null){
                         val image = it
@@ -111,21 +113,14 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                                 }
                             }
                         }
-                        imageViewModel.getLocationsByTripID(image.tripID!!)
-                        println("iddddddddddd"+image.tripID)
-                        imageViewModel.locations.observe(this){
-                            val locations=it
-                            for (location in locations){
+
+                        imageViewModel.locations.observe(this) {
+                            println("iddddddddddd"+image.tripID)
+                            for (location in it){
                                 println("locationnnnnnnnnnnn"+location.tripID)
                                 addMarkerLocation(location.latitude.toDouble(),location.longitude.toDouble())
-
-
+                            }
                         }
-
-                        }
-
-
-
 
                     }
                 }

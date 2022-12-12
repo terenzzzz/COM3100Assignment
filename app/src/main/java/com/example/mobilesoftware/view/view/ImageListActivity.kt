@@ -175,7 +175,10 @@ class ImageListActivity : ImageAppCompatActivity() {
                 itemView.setOnClickListener(View.OnClickListener {
                     // the listener is implemented in MainActivity
                     // but this function delegate allows invocation
-                    onViewHolderItemClick(image.id, position, context)
+                    image.tripID?.let { it1 ->
+                        onViewHolderItemClick(image.id, position,
+                            it1, context)
+                    }
                 })
             }
 
@@ -194,9 +197,10 @@ class ImageListActivity : ImageAppCompatActivity() {
                  * No need to have an ActivityResultContract because that was
                  * all part of the boiler plate to handle data changes
                  */
-                protected fun onViewHolderItemClick(id: Int, position: Int, context: Context) {
+                protected fun onViewHolderItemClick(id: Int, position: Int, tripID: Int, context: Context) {
                     val intent = Intent(context, ShowImageActivity::class.java)
                     intent.putExtra("id", id)
+                    intent.putExtra("tripID",tripID)
                     intent.putExtra("position", position)
                     (context as ImageListActivity).showImageActivityResultContract.launch(intent)
                 }
