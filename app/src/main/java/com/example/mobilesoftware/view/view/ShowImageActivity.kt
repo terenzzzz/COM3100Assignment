@@ -99,7 +99,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         println(image.longitude)
 
 
-                        addMarker(image.latitude!!.toDouble(),image.longitude!!.toDouble())
+                        //addMarker(image.latitude!!.toDouble(),image.longitude!!.toDouble())
                         imageViewModel.filter(image.tripID!!,0)
 
                         // start observing the date from the ViewModel
@@ -109,7 +109,9 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                             val theImages= it
                             println("helloooooooo"+theImages[0].pressure)
                             for (i in theImages){
-                                println(i.title)
+                                if (i.id==imageId){
+                                addMarker(i.latitude!!.toDouble(),i.longitude!!.toDouble())
+                                println(i.title)}
                             }
                         }
 
