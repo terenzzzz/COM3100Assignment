@@ -10,6 +10,6 @@ open class ImageAppCompatActivity: AppCompatActivity() {
     // Instantiate the ViewModel from the ImageViewModelFactory
     // which extends ViewModelProvider.Factory
     protected val imageViewModel: ImageListViewModel by viewModels {
-        ImageViewModelFactory((application as ImageApplication).imgrepository, application)
+        ImageViewModelFactory((application as ImageApplication).imgrepository,(application as ImageApplication).triprepository, application)
     }
 }

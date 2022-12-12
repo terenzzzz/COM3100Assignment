@@ -14,6 +14,7 @@ import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
+import java.util.concurrent.Flow
 
 /**
  * The repository is instantiated in the ImageApplication class

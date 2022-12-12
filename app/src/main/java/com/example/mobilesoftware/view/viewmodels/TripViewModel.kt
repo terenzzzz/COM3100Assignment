@@ -114,7 +114,7 @@ class TripViewModel : ViewModel() {
             val id = imageRepository.insert(
                 Image(
                     imagePath = image,
-                    title = "Default",
+                    title = "Default Title",
                     date = LocalDate.now(),
                     tripID = tripID,
                     latitude = latitude.get(),
