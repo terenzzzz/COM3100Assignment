@@ -8,26 +8,28 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * DAO to handles interactions with the trip room table
+ */
+
+
 @Dao
 interface TripDao {
-    // suspend keyword not needed with the use of Flow
+
+    //Get all trips by most recent
     @Query("Select * from trips ORDER by id DESC")
     fun getTrips(): Flow<List<TripEntity>>
 
+    //Get all trips by oldest
     @Query("Select * from trips ORDER by id ASC")
     fun getTripsDesc(): Flow<List<TripEntity>>
 
-    // Useful for tracking Entities
+    //Get a specific trips by ID
     @Query("Select * from trips Where id = :id")
     fun getTrip(id: Int): Flow<TripEntity>
 
+    //Insert trip into table
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(tripEntity: TripEntity): Long
-
-    @Update
-    suspend fun update(tripEntity: TripEntity)
-
-    @Delete
-    suspend fun delete(tripEntity: TripEntity)
 
 }

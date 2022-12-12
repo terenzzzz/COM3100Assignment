@@ -23,7 +23,9 @@ import java.time.LocalDate
  * tasks can continue through configuration changes and deliver results after Fragment or Activity
  * is available.
  *
- * @param repository - data access is through the repository.
+ * @param imgrepository - data access is through the image repository.
+ * @param tripRepository - data access is through the trip repository.
+ * @param applicationContext - provides context of application to points of the app that require it
  */
 class ImageListViewModel(private val imgrepository: ImageRepository,private val tripRepository: TripRepository,private val applicationContext: Application) : ViewModel() {
 

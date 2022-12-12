@@ -63,14 +63,6 @@ class TripRepository(private val tripDao: TripDao,private val locationDao: Locat
         return tripDao.insert(trip.asDatabaseEntity()).toInt()
     }
 
-    suspend fun update(trip: TripElement){
-        tripDao.update(trip.asDatabaseEntity())
-    }
-
-    suspend fun delete(trip: TripElement){
-        tripDao.delete(trip.asDatabaseEntity())
-    }
-
     /**
      * This portion will handle the LocaitonDAO interactions and
      * provide all the functions for handling locations
