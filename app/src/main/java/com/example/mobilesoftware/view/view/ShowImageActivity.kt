@@ -66,15 +66,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         val image = it
                         // Display the model's data in the view. This is a lot of back and forth!
                         loadImageView(image.imagePath.toString())
-                        //imageViewModel.filter(image.tripID!!,0)
-                        //val photolist: MutableLiveData<List<Image>> = imageViewModel.images as MutableLiveData<List<Image>>
 
-
-
-
-                        //println(photolist.value!!.size)
-                        //println(photos[0].toString())
-                        //println(imageViewModel.images.toString())
                         binding.editTextTitle.setText(image.title)
                         binding.editTextDescription.setHint("Enter Description")
                         image.description?.isNotEmpty().apply {
@@ -119,10 +111,16 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                                 }
                             }
                         }
-                        //val locations=imageViewModel.getLocationsByTripID(image.tripID!!)
-                        //for (location in locations){
-                            //println("location dddddddddd"+location.latitude)
-                        //}
+                        imageViewModel.getLocationsByTripID(image.tripID!!)
+                        imageViewModel.locations.observe(this){
+                            val locations=it
+                            for (location in locations){
+                                println("location dddddddddd"+location.latitude)
+
+
+                        }
+
+                        }
 
 
 

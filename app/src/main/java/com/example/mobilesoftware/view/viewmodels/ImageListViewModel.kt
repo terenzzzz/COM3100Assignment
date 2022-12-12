@@ -25,7 +25,6 @@ import java.time.LocalDate
  * @param applicationContext - provides context of application to points of the app that require it
  */
 class ImageListViewModel(private val imgrepository: ImageRepository,private val tripRepository: TripRepository,private val applicationContext: Application) : ViewModel() {
-
     var trips: LiveData<List<TripElement>> = Transformations.map(tripRepository.trips){
         it.asDomainModels(applicationContext)
     } as MutableLiveData<List<TripElement>>
@@ -41,9 +40,9 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
         it.asDomainModels(applicationContext)
     } as MutableLiveData<List<Image>>
 
-    var locations: LiveData<List<Image>> = Transformations.map(imgrepository.locations){
+    var locations: LiveData<List<Location>> = Transformations.map(imgrepository.locations){
         it.asLocDatabaseEntities()
-    } as MutableLiveData<List<Image>>
+    } as MutableLiveData<List<Location>>
 
 
 

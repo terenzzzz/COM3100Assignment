@@ -12,8 +12,9 @@ import com.example.mobilesoftware.view.database.LocationDao
 import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
+
 import java.time.LocalDate
-import java.util.concurrent.Flow
+
 
 /**
  * The repository is instantiated in the ImageApplication class
