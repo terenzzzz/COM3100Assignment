@@ -1,5 +1,6 @@
 package com.example.mobilesoftware.view.respository
 
+import android.app.Application
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
@@ -26,7 +27,9 @@ class TripRepository(private val tripDao: TripDao,private val locationDao: Locat
     // The ViewModel will observe this Flow
     // Room will handle executing this on a thread
     var trips: LiveData<List<TripEntity>> = tripDao.getTrips().asLiveData()
-
+    fun getTrip(id: Int) : LiveData<TripEntity>{
+        return tripDao.getTrip(id).asLiveData()
+    }
     fun sorting(setting : Int){
         trips = if(setting == 1){
             tripDao.getTripsDesc().asLiveData()
@@ -82,18 +85,13 @@ class TripRepository(private val tripDao: TripDao,private val locationDao: Locat
         locationDao.updateLocationsTripID(lid,tid)
     }
 
-    suspend fun getLocationsByTripID(tid: Int): Flow<List<LocationEntity>> {
-        return locationDao.getLocationsByTripID(tid)
-    }
-
-
 }
 
 
 /***
  * Function to map Trip database entities to the domain model
  */
-fun TripEntity.asDomainModel(): TripElement {
+fun TripEntity.asDomainModel(applicationContext: Application): TripElement {
     return TripElement(
         id = id,
         title = title,
@@ -103,7 +101,7 @@ fun TripEntity.asDomainModel(): TripElement {
 }
 
 
-fun List<TripEntity>.asDomainModels(): List<TripElement>{
+fun List<TripEntity>.asDomainModels(applicationContext: Application): List<TripElement>{
     return map{
         TripElement(
             id = it.id,
@@ -135,18 +133,6 @@ fun List<TripElement>.asDatabaseEntities(): List<TripEntity>{
             time = it.time
         )
     }
-}
-
-/***
- * Function to map Location database entities to the domain model
- */
-fun LocationEntity.asDomainModel(): Location {
-    return Location(
-        id = id,
-        longitude = longitude,
-        latitude = latitude,
-        tripID = tripID
-    )
 }
 
 /**

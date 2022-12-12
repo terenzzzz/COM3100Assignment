@@ -1,5 +1,7 @@
 package com.example.mobilesoftware.view.view
 
+
+
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -19,15 +21,23 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.mobilesoftware.R
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.flow.Flow
+import java.util.*
+import kotlin.concurrent.schedule
 
 class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityShowImageBinding
     private lateinit var mMap: GoogleMap
-
+    //var myViewModel: ShowImageViewModel()
 
     // This class didn't change so much as the other classes serve to show the examples intended well enough
     // Still, you should pay attention to the relevant changes.
@@ -40,37 +50,73 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         // along with the intent.
         val bundle: Bundle? = intent.extras
 
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.fl_map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
         if (bundle!= null) {
             val imageId = bundle.getInt("id")
             val position = bundle.getInt("position")
 
             if (imageId > 0) {
                 // Observe the image data, only one will be received
+
                 imageViewModel.getImage(imageId).observe(this){
                     if(it != null){
                         val image = it
                         // Display the model's data in the view. This is a lot of back and forth!
                         loadImageView(image.imagePath.toString())
+                        //imageViewModel.filter(image.tripID!!,0)
+                        //val photolist: MutableLiveData<List<Image>> = imageViewModel.images as MutableLiveData<List<Image>>
+
+                        println ("sizeeeeeeeeeeeeeeeeeeee")
+
+
+                        //println(photolist.value!!.size)
+                        //println(photos[0].toString())
+                        //println(imageViewModel.images.toString())
                         binding.editTextTitle.setText(image.title)
+                        binding.editTextDescription.setHint("Enter Description")
                         image.description?.isNotEmpty().apply {
                             binding.editTextDescription.setText(image.description)
                         }
-                        println(image.latitude)
-                        println(image.longitude)
-                        println(image.tripID)
-
-                        val manager: FragmentManager = supportFragmentManager
-                        val transaction: FragmentTransaction = manager.beginTransaction()
-
-
-                        val mapFragment = supportFragmentManager.findFragmentById(R.id.fl_map) as SupportMapFragment
-                        mapFragment.getMapAsync(this)
-
-
                         // onClick listener for the update button
                         binding.buttonSave.setOnClickListener {
                             onUpdateButtonClickListener(it, image, position)
                         }
+                        val trip=imageViewModel.getTrip(image.tripID!!)
+                        trip.observe(this){
+                            if(it !=null){
+                                val theTrip= it
+                                println (theTrip.title)
+                                binding.tripTitle.text=theTrip.title
+                            }
+
+                        }
+                        binding.pressure.text = image.pressure+ " hpa"
+                        binding.temperature.text=image.temperature
+                        binding.date.text=image.date.toString()
+
+                        println(image.latitude)
+                        println(image.longitude)
+
+
+                        //addMarker(image.latitude!!.toDouble(),image.longitude!!.toDouble())
+                        imageViewModel.filter(image.tripID!!,0)
+
+                        // start observing the date from the ViewModel
+                        imageViewModel.images.observe(this) {
+
+
+                            val theImages= it
+                            println("helloooooooo"+theImages[0].pressure)
+                            for (i in theImages){
+                                if (i.id==imageId){
+                                addMarker(i.latitude!!.toDouble(),i.longitude!!.toDouble())
+                                println(i.title)}
+                            }
+                        }
+
+
+
 
                     }
                 }
@@ -79,6 +125,11 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+    }
+    private fun addMarker(latitude:Double,longitude:Double){
+        val point = LatLng(latitude, longitude)
+        mMap.addMarker(MarkerOptions().position(point))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
     /**
      * This function will either use the file path to load the image by default
