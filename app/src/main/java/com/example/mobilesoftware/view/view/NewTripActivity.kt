@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.example.mobilesoftware.databinding.ActivityNewTripBinding
+import com.example.mobilesoftware.view.service.SensorService
 import com.example.mobilesoftware.view.viewmodels.NewTripViewModel
 import java.util.*
 
@@ -26,6 +27,10 @@ class NewTripActivity : AppCompatActivity() {
         var binding = ActivityNewTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = myViewModel
+
+        Intent(this, SensorService::class.java).apply {
+            startService(this)
+        }
 
         Timer().schedule(object : TimerTask() {
             override fun run() {

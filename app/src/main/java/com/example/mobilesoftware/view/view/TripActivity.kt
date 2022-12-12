@@ -59,6 +59,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private var headMarker:Marker? = null
+
 //    temperature & pressure
     private lateinit var sensorManager: SensorManager
     private var temperatureSensor: Sensor?=null
@@ -105,9 +106,15 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         setContentView(binding.root)
         binding.viewModel = myViewModel
 
-        Intent(this,SensorService::class.java).apply {
-            startService(this)
-        }
+        // Call service
+//        Intent(this,SensorService::class.java).apply {
+//            startService(this)
+//        }
+
+        //        Set data
+        val title = intent.getStringExtra("title")
+        val startTime = intent.getStringExtra("time")
+        myViewModel.init(title,startTime)
 
         //        Add map
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -161,10 +168,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         sensorManager.registerListener(pressureCallback,pressureSensor,20000)
 
 
-        //        Set data
-        val title = intent.getStringExtra("title")
-        val startTime = intent.getStringExtra("time")
-        myViewModel.init(title,startTime)
 
 
         Timer().schedule(object : TimerTask() {
@@ -215,15 +218,14 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     }
 
     override fun onResume() {
+        Log.d("TripActivity", "onResume: ")
         super.onResume()
+        binding.startTime.text = myViewModel.startTime.get()
         refreshLatLon()
         sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
         sensorManager.registerListener(pressureCallback,temperatureSensor,20000)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
 
     @SuppressLint("MissingPermission")
