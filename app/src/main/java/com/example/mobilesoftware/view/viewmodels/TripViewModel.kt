@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mobilesoftware.view.ImageApplication
 import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.model.Image
+import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.model.Trip
 import com.example.mobilesoftware.view.respository.ImageRepository
 import com.example.mobilesoftware.view.respository.TripRepository
@@ -37,6 +38,7 @@ class TripViewModel : ViewModel() {
     var longitude: ObservableField<String> = ObservableField()
     var tripID : Int = -1
     var imgIDs : MutableList<Int> = arrayListOf()
+    var locIDs : MutableList<Int> = arrayListOf()
 
     fun init(title:String?,time:String?){
         this.title.set(title)
@@ -124,9 +126,24 @@ class TripViewModel : ViewModel() {
         }
     }
 
+    fun insertLocation(longitude: String,latitude: String){
+        viewModelScope.launch {
+            val id = tripRepository.insertLocation(
+                Location(
+                    tripID = tripID,
+                    latitude = latitude,
+                    longitude = longitude)
+            )
+            locIDs.add(id)
+        }
+    }
+
     suspend fun assignTripId(tID : Int){
         for (v in imgIDs){
             imageRepository.updateTripID(v,tID)
+        }
+        for (v in locIDs){
+            tripRepository.updateLocationTripID(v,tID)
         }
     }
 

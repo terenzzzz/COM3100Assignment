@@ -8,7 +8,11 @@ import androidx.lifecycle.asLiveData
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.database.ImageDao
 import com.example.mobilesoftware.view.database.ImageEntity
+import com.example.mobilesoftware.view.database.LocationDao
+import com.example.mobilesoftware.view.database.LocationEntity
+import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.utils.getOrMakeThumbNail
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.util.concurrent.Flow
 
@@ -18,7 +22,7 @@ import java.util.concurrent.Flow
  * instance, so we only need this private imageDao property in the
  * default constructor in this implementation
  */
-class ImageRepository(private val imageDao: ImageDao) {
+class ImageRepository(private val imageDao: ImageDao,private val locationDao: LocationDao) {
 
     // The ViewModel will observe this Flow
     // Room will handle executing this on a thread
@@ -83,7 +87,17 @@ class ImageRepository(private val imageDao: ImageDao) {
     suspend fun delete(image: Image){
         imageDao.delete(image.asDatabaseEntity())
     }
+
+    /**
+     * Function to get all locations relating to the tripID entered for the show image activity
+     */
+
+    fun getLocationsByTripID(tid: Int): List<Location> {
+        return locationDao.getLocationsByTripID(tid).asLocDatabaseEntities()
+    }
 }
+
+
 
 /***
  * Function to map database entities to the domain model
@@ -168,6 +182,17 @@ fun List<Image>.asDatabaseEntities(): List<ImageEntity>{
             pressure = it.pressure,
             temp = it.temperature,
             date = it.date.toString()
+        )
+    }
+}
+
+fun List<LocationEntity>.asLocDatabaseEntities(): List<Location>{
+    return map{
+        Location(
+            id = it.id,
+            longitude = it.longitude,
+            latitude = it.latitude,
+            tripID = it.tripID
         )
     }
 }

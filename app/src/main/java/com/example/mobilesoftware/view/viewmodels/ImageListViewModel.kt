@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
 import com.example.mobilesoftware.view.database.ImageEntity
+import com.example.mobilesoftware.view.database.LocationEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.respository.ImageRepository
@@ -99,6 +100,14 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
      */
     fun delete(image: Image) = viewModelScope.launch {
         imgrepository.delete(image)
+    }
+
+    /**
+     * Get all the relevant locations to be used to show the path taken in the
+     * trip that is going to be shown in the ShowImageActivity
+     */
+    fun getLocationsByTripID(tid: Int): List<LocationEntity> {
+        return imgrepository.getLocationsByTripID(tid)
     }
 
 }
