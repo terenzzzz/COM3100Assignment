@@ -45,7 +45,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var binding: ActivityTripBinding
 
     //    Location
-    val PERMISSION_LOCATION_GPS:Int = 1
     private var lastLocation: Location? = null
     private var headMarker:Marker? = null
 
@@ -95,18 +94,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         binding.viewModel = myViewModel
 
         callService()
-
-        // Permissiont request
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), PERMISSION_LOCATION_GPS
-            )
-        }
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_LOCATION_GPS
-            )
-        }
 
         //        Set data
         val title = intent.getStringExtra("title")
@@ -165,6 +152,8 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                     addDot(lastLocation!!.latitude, lastLocation!!.longitude)
                 }
                 lastLocation = location
+                myViewModel.setLocation(lastLocation!!.latitude.toString(), lastLocation!!.longitude.toString())
+                myViewModel.insertLocation(lastLocation!!.latitude.toString(), lastLocation!!.longitude.toString())
 
                 Log.d("TripActivity", "latitude: $latitude, longitude: $longitude")
                 // Use the data to update the UI
