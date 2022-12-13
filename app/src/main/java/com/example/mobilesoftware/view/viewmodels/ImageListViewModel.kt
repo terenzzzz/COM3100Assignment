@@ -27,13 +27,13 @@ import java.time.LocalDate
 class ImageListViewModel(private val imgrepository: ImageRepository,private val tripRepository: TripRepository,private val applicationContext: Application) : ViewModel() {
 
     var trips: LiveData<List<TripElement>> = Transformations.map(tripRepository.trips){
-        it.asDomainModels(applicationContext)
+        it.asDomainModels()
     } as MutableLiveData<List<TripElement>>
     /**
      * Retrieves a single Trip Element object for the specified id
      */
     fun getTrip(id: Int) : LiveData<TripElement> = Transformations.map(tripRepository.getTrip(id)){
-        it.asDomainModel(applicationContext)
+        it.asDomainModel()
     }
     // Receive the Flow of ImageEntity data from the repository, but transform to the LiveData of Images
     // that will be observed fom the view
