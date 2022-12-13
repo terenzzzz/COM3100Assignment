@@ -6,38 +6,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="70dp"
     android:layout_width="match_parent"
-    android:layout_marginTop="5dp"
+    android:layout_marginTop="10dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp">
-    
-    <TextView
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/titleTrip"
-        android:textStyle="bold"
-        android:textSize="20sp"
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="30dp">
-    </TextView>
-    <TextView
-        app:layout_constraintTop_toBottomOf="@id/titleTrip"
-        android:id="@+id/dateTrip"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp">
-    </TextView>
-    <TextView
-        app:layout_constraintTop_toBottomOf="@id/titleTrip"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="wrap_content"
-        android:id="@+id/timeTrip"
-        android:layout_height="20dp">
-    </TextView>
-    <TextView
-        app:layout_constraintTop_toBottomOf="@id/timeTrip"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="@string/c4m"
-        android:textStyle="italic">
-    </TextView>
+        android:layout_height="wrap_content"
+        app:contentPadding="10dp"
+        tools:ignore="MissingConstraints">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+            <TextView
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/titleTrip"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+            </TextView>
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/titleTrip"
+                android:id="@+id/dateTrip"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp">
+            </TextView>
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/titleTrip"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="wrap_content"
+                android:id="@+id/timeTrip"
+                android:layout_height="20dp">
+            </TextView>
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/timeTrip"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:text="@string/c4m"
+                android:textStyle="italic">
+            </TextView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
     
 </androidx.constraintlayout.widget.ConstraintLayout>

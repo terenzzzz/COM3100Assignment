@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -39,7 +40,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:contentPadding="20dp">
+                    app:contentPadding="15dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -80,7 +81,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginVertical="10dp"
+                            android:layout_marginVertical="5dp"
                             android:orientation="vertical">
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -90,7 +91,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textColor="@color/black"
                                     android:textStyle="bold"
                                     android:text="Start Time:"
@@ -102,7 +103,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginHorizontal="20dp"
                                     android:layout_weight="3"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textColor="@color/black"
                                     android:text='@{viewModel.startTime}'
                                     android:gravity="left"/>
@@ -117,7 +118,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
                                     android:text="Now:"
@@ -129,7 +130,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginHorizontal="20dp"
                                     android:layout_weight="3"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textColor="@color/black"
                                     android:text='@{viewModel.currentTime}'
                                     android:gravity="left"/>
@@ -143,7 +144,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
                                     android:text="Duration:"
@@ -155,7 +156,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginHorizontal="20dp"
                                     android:layout_weight="3"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textColor="@color/black"
                                     android:text='@{viewModel.duration}'
                                     android:gravity="left"/>
@@ -169,7 +170,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
                                     android:text="Temperature:"
@@ -181,7 +182,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginHorizontal="20dp"
                                     android:layout_weight="3"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textColor="@color/black"
                                     android:text='@{viewModel.temperature+ `(℃)`}'
                                     android:gravity="left"/>
@@ -195,7 +196,7 @@
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
                                     android:text="Pressure:"
@@ -207,7 +208,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginHorizontal="20dp"
                                     android:layout_weight="3"
-                                    android:textSize="20sp"
+                                    android:textSize="15dp"
                                     android:textColor="@color/black"
                                     android:text="@{viewModel.pressure + `(hpa)`}"
                                     android:gravity="left"/>
@@ -219,8 +220,7 @@
                                 android:name="com.google.android.gms.maps.SupportMapFragment"
                                 android:layout_marginVertical="10dp"
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp" />
-
+                                android:layout_height="300dp" />
                         </LinearLayout>
                         <Button
                             android:id="@+id/take_pic"
@@ -240,8 +240,6 @@
                             android:layout_height="wrap_content"
                             android:text="Stop"
                             android:layout_gravity="right"/>
-
-
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>

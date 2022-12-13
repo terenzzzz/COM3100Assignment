@@ -93,7 +93,6 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
 
                         // start observing the date from the ViewModel
                         imageViewModel.images.observe(this) {
-
                             if(it != null){
                                 val theImages= it
                                 for (image in theImages){

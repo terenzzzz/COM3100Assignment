@@ -88,7 +88,7 @@ class ImageRepository(private val imageDao: ImageDao,private val locationDao: Lo
                 date = date
             )
         image.getOrMakeThumbNail(context)
-        imageDao.insert(image!!.asDatabaseEntity())
+        imageDao.insert(image.asDatabaseEntity())
     }
 
     suspend fun updateTripID(iid: Int, tid: Int){
@@ -128,7 +128,7 @@ fun ImageEntity.asDomainModel(context: Context): Image {
         pressure = pressure,
         temperature = temp,
         date = LocalDate.parse(date))
-    img.getOrMakeThumbNail(context)!!
+    img.getOrMakeThumbNail(context)
     return img
 }
 

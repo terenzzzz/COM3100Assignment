@@ -83,7 +83,7 @@ class TripRepository(private val tripDao: TripDao,private val locationDao: Locat
 /***
  * Function to map Trip database entities to the domain model
  */
-fun TripEntity.asDomainModel(applicationContext: Application): TripElement {
+fun TripEntity.asDomainModel(): TripElement {
     return TripElement(
         id = id,
         title = title,
@@ -93,7 +93,7 @@ fun TripEntity.asDomainModel(applicationContext: Application): TripElement {
 }
 
 
-fun List<TripEntity>.asDomainModels(applicationContext: Application): List<TripElement>{
+fun List<TripEntity>.asDomainModels(): List<TripElement>{
     return map{
         TripElement(
             id = it.id,
