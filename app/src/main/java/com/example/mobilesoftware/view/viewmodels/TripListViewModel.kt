@@ -22,7 +22,7 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
     // Receive the Flow of ImageEntity data from the repository, but transform to the LiveData of Images
     // that will be observed fom the view
     var trips: LiveData<List<TripElement>> = Transformations.map(triprepository.trips){
-        it.asDomainModels(applicationContext)
+        it.asDomainModels()
     } as MutableLiveData<List<TripElement>>
 
     /**
@@ -31,7 +31,7 @@ class TripListViewModel(private val triprepository: TripRepository, private val 
     fun sorting(setting: Int){
         triprepository.sorting(setting)
         trips = Transformations.map(triprepository.trips){
-            it.asDomainModels(applicationContext)
+            it.asDomainModels()
         } as MutableLiveData<List<TripElement>>
     }
 

@@ -49,36 +49,39 @@
             android:name=".view.view.TripActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.MobileSoftware"
+            android:label="Current Trip">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name="com.example.mobilesoftware.view.view.ImageListActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/Theme.MobileSoftware"
             android:exported="false"
-            android:label="ImageListAct" />
+            android:label="Browse Images"/>
         <activity
             android:name="com.example.mobilesoftware.view.view.NewTripActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.MobileSoftware"
+            android:label="New Trip"/>
         <activity
             android:name="com.example.mobilesoftware.view.view.ShowImageActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/Theme.MobileSoftware"
             android:exported="false"
-            android:label="ShowImageActivity" />
+            android:label="Inspect Image" />
         <activity
             android:name="com.example.mobilesoftware.view.view.CameraActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="false">
+            android:theme="@style/Theme.MobileSoftware"
+            android:exported="false"
+            android:label="Camera">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".view.view.TripListActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/Theme.MobileSoftware"
             android:exported="true"
             android:label="Trip List">
             <intent-filter>
