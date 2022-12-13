@@ -58,22 +58,21 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         if (bundle!= null) {
             val imageId = bundle.getInt("id")
             val position = bundle.getInt("position")
-            val tripid = bundle.getInt("tripID")
+            val tripId = bundle.getInt("tripID")
 
             if (imageId > 0) {
                 // Observe the image data, only one will be receive
-                imageViewModel.getLocationsByTripID(tripid)
+                imageViewModel.getLocationsByTripID(tripId)
                 imageViewModel.getImage(imageId).observe(this){
                     if(it != null){
                         val image = it
-                        // Display the model's data in the view. This is a lot of back and forth!
                         loadImageView(image.imagePath.toString())
-
                         binding.editTextTitle.setText(image.title)
-                        binding.editTextDescription.setHint("Enter Description")
+
                         image.description?.isNotEmpty().apply {
                             binding.editTextDescription.setText(image.description)
                         }
+
                         // onClick listener for the update button
                         binding.buttonSave.setOnClickListener {
                             onUpdateButtonClickListener(it, image, position)
@@ -82,43 +81,52 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         trip.observe(this){
                             if(it !=null){
                                 val theTrip= it
-                                println (theTrip.title)
                                 binding.tripTitle.text=theTrip.title
                             }
 
                         }
-                        binding.pressure.text = image.pressure+ " hpa"
-                        binding.temperature.text=image.temperature
+                        binding.pressure.text = image.pressure+ " hPa"
+                        binding.temperature.text=image.temperature+ " \u2103"
                         binding.date.text=image.date.toString()
 
-                        println(image.latitude)
-                        println(image.longitude)
-
-
-                        //addMarker(image.latitude!!.toDouble(),image.longitude!!.toDouble())
                         imageViewModel.filter(image.tripID!!,0)
 
                         // start observing the date from the ViewModel
                         imageViewModel.images.observe(this) {
 
-
-                            val theImages= it
-                            println("helloooooooo"+theImages[0].pressure)
-                            for (i in theImages){
-                                if (i.id==imageId){
-                                addMarkerCurrent(i.latitude!!.toDouble(),i.longitude!!.toDouble())
-                                println(i.title)}
-                                else{
-                                    addMarker(i.latitude!!.toDouble(),i.longitude!!.toDouble(),i.title)
+                            if(it != null){
+                                val theImages= it
+                                for (image in theImages){
+                                    if (image.id==imageId){
+                                    addMarkerCurrent(image.latitude!!.toDouble(),image.longitude!!.toDouble())
+                                    }
+                                    else{
+                                        addMarker(image.latitude!!.toDouble(),image.longitude!!.toDouble(),image.title)
+                                    }
                                 }
                             }
                         }
 
                         imageViewModel.locations.observe(this) {
-                            println("iddddddddddd"+image.tripID)
-                            for (location in it){
-                                println("locationnnnnnnnnnnn"+location.tripID)
-                                addMarkerLocation(location.latitude.toDouble(),location.longitude.toDouble())
+                            if(it != null) {
+                                val locations = it
+                                addMarkerLocation(
+                                    locations[0].longitude.toDouble(),
+                                    locations[0].latitude.toDouble(),
+                                    "start"
+                                )
+                                addMarkerLocation(
+                                    locations[locations.size - 1].longitude.toDouble(),
+                                    locations[locations.size - 1].latitude.toDouble(),
+                                    "end"
+                                )
+                                for (location in 1..locations.size - 2) {
+                                    addMarkerLocation(
+                                        locations[location].longitude.toDouble(),
+                                        locations[location].latitude.toDouble(),
+                                        "middle"
+                                    )
+                                }
                             }
                         }
 
@@ -130,9 +138,29 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
     }
-    private fun addMarkerLocation(latitude:Double,longitude:Double){
+
+    private fun addMarkerLocation(latitude:Double,longitude:Double,type:String) {
         val point = LatLng(latitude, longitude)
-        mMap.addMarker(MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+        if (type == "start") {
+            mMap.addMarker(
+                MarkerOptions().position(point)
+                    .icon(BitmapDescriptorFactory.fromResource((R.drawable.green_dot)))
+            )
+        }
+        else if (type=="end"){
+            mMap.addMarker(
+                MarkerOptions().position(point)
+                    .icon(BitmapDescriptorFactory.fromResource((R.drawable.red_dot)))
+            )
+        }
+        else{
+            mMap.addMarker(
+                MarkerOptions().position(point)
+                    .icon(BitmapDescriptorFactory.fromResource((R.drawable.blue_dot)))
+            )
+
+        }
+
     }
     private fun addMarker(latitude:Double,longitude:Double,imageTitle:String){
         val point = LatLng(latitude, longitude)
@@ -217,12 +245,9 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun onUpdateButtonClickListener(view: View, image: Image, position: Int){
-        // Update the data in the model back. This is a lot of work, back and forth!
         image.title = binding.editTextTitle.text.toString()
         image.description = binding.editTextDescription.text.toString()
-
         imageViewModel.update(image)
-
         // Start an intent to let the calling activity know an update has happened.
         val intent = Intent(this@ShowImageActivity, TripListActivity::class.java)
         intent.putExtra("position", position)

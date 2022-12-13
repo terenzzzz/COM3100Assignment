@@ -6,4 +6,12 @@
     <string name="takeP">Take Picture</string>
     <string name="uplP">Upload Picture</string>
     <string name="stopT">Stop Trip</string>
+    <string name="tTitle">Trip Title:</string>
+    <string name="imageSel">The image selected</string>
+    <string name="enterTitle">Enter Image Title</string>
+    <string name="enterDescription">Enter Image Description</string>
+    <string name="tempLabel">Temperature:</string>
+    <string name="pressureLabel">Pressure:</string>
+    <string name="dateTakenLabel">Capture Date:</string>
+    <string name="saveLabel">Save Changes</string>
 </resources>
