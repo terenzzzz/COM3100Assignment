@@ -182,9 +182,9 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         }, 0,1000)
 
         binding.backIcon.setOnClickListener { view ->
-            // Do some work here
+            stopService()
             NewTripActivity.startFn(this)
-            this.finish()
+            finish()
         }
 
         // Removes take picture button if no cameras are avaliable

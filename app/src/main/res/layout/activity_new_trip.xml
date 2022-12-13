@@ -11,55 +11,81 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@color/white"
         tools:context=".view.view.NewTripActivity">
-        <androidx.cardview.widget.CardView
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentPadding="20dp">
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/backIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/actionModeCloseDrawable" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <TextView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginVertical="20dp"
-                    android:textColor="@color/black"
-                    android:textSize="30dp"
-                    android:text="New Visit" />
+                    app:cardElevation="0dp"
+                    app:contentPadding="20dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:textSize="30dp"
+                            android:text="New Visit" />
 
-                <TextView
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginVertical="20dp"
+                            android:textSize="20dp"
+                            android:textColor="@color/black"
+                            android:text="Title of Trip" />
+
+                        <EditText
+                            android:id="@+id/et_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:maxLines="1" />
+
+                        <TextView
+                            android:id="@+id/time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.time}"/>
+
+                        <Button
+                            android:id="@+id/start"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:layout_gravity="right"
+                            android:text="Start"/>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginVertical="20dp"
-                    android:textSize="20dp"
-                    android:textColor="@color/black"
-                    android:text="Title of Trip" />
-
-                <EditText
-                    android:id="@+id/et_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"/>
-
-                <TextView
-                    android:id="@+id/time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.time}"/>
-
-                <Button
-                    android:id="@+id/start"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_gravity="right"
-                    android:text="Start"/>
-
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </ScrollView>
+
     </LinearLayout>
 </layout>

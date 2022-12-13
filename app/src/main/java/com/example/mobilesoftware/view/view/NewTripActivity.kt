@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import com.example.mobilesoftware.databinding.ActivityNewTripBinding
 import com.example.mobilesoftware.view.service.SensorService
 import com.example.mobilesoftware.view.viewmodels.NewTripViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 class NewTripActivity : AppCompatActivity() {
@@ -52,13 +53,24 @@ class NewTripActivity : AppCompatActivity() {
             val title = binding.etTitle.text.toString()
             val time = binding.time.text.toString()
 
-            val intent = Intent(this,TripActivity::class.java);
-            intent.putExtra("title", title);
-            intent.putExtra("time", time)
-            startActivity(intent);
+            if (title == ""){
+                val snackbar = Snackbar.make(view, "Please Enter A Title For The Trip!", Snackbar.LENGTH_SHORT)
+                snackbar.show()
+            }else{
+                val intent = Intent(this,TripActivity::class.java);
+                intent.putExtra("title", title);
+                intent.putExtra("time", time)
+                startActivity(intent);
+                this.finish()
+            }
 
-            this.finish()
+
         })
+
+        binding.backIcon.setOnClickListener { view ->
+            TripListActivity.startFn(this)
+            finish()
+        }
     }
 
 }
