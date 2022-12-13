@@ -3,32 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-        <variable name="viewModel" type="com.example.mobilesoftware.view.viewmodels.TripViewModel" />
-    </data>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/backIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/actionModeCloseDrawable" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="30sp"
-                android:text=" "/>
-                <!--android:text='@{viewModel.title}'-->
-        </androidx.appcompat.widget.Toolbar>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -40,7 +19,10 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:contentPadding="20dp">
+                    app:contentPaddingTop="15dp"
+                    app:contentPaddingLeft="20dp"
+                    app:contentPaddingRight="20dp"
+                    app:contentPaddingBottom="20dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -55,18 +37,19 @@
 
                             <ImageView
                                 android:id="@+id/image"
-                                android:layout_width="360dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="470dp"
-                                android:layout_weight="1"
+                                android:contentDescription="@string/imageSel"
                                 android:layout_marginBottom="15dp"/>
                             <EditText
                             android:id="@+id/editText_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
+                            android:hint="@string/enterTitle"
+                            android:inputType="text"
                             android:ems="10"
                             android:minHeight="48dp"
-                            android:text="Title"
                             app:layout_constraintBottom_toTopOf="@id/editText_description"
                             tools:layout_editor_absoluteX="16dp" />
 
@@ -76,9 +59,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="8dp"
                                 android:ems="10"
+                                android:hint="@string/enterDescription"
+                                android:inputType="text"
                                 android:minHeight="48dp"
-                                android:text="Description"
-
                                 tools:layout_editor_absoluteX="16dp" />
 
                         </LinearLayout>
@@ -99,7 +82,7 @@
                                     android:textSize="20sp"
                                     android:textColor="@color/black"
                                     android:textStyle="bold"
-                                    android:text="Trip Title:"
+                                    android:text="@string/tTitle"
                                     android:layout_weight="3"
                                     android:gravity="left"/>
                                 <TextView
@@ -110,7 +93,6 @@
                                     android:layout_weight="3"
                                     android:textSize="20sp"
                                     android:textColor="@color/black"
-                                    android:text="the title"
                                     android:gravity="left"/>
                             </LinearLayout>
 
@@ -126,7 +108,7 @@
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
-                                    android:text="Temperature:"
+                                    android:text="@string/tempLabel"
                                     android:layout_weight="3"
                                     android:gravity="left"/>
                                 <TextView
@@ -137,7 +119,6 @@
                                     android:layout_weight="3"
                                     android:textSize="20sp"
                                     android:textColor="@color/black"
-                                    android:text="add temp"
                                     android:gravity="left"/>
                             </LinearLayout>
 
@@ -152,7 +133,7 @@
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
-                                    android:text="Pressure:"
+                                    android:text="@string/pressureLabel"
                                     android:layout_weight="3"
                                     android:gravity="left"/>
                                 <TextView
@@ -163,7 +144,6 @@
                                     android:layout_weight="3"
                                     android:textSize="20sp"
                                     android:textColor="@color/black"
-                                    android:text="pressure at"
                                     android:gravity="left"/>
                             </LinearLayout>
 
@@ -178,7 +158,7 @@
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
-                                    android:text="Date Taken:"
+                                    android:text="@string/dateTakenLabel"
                                     android:layout_weight="3"
                                     android:gravity="left"/>
                                 <TextView
@@ -190,17 +170,15 @@
                                     android:layout_marginBottom="7dp"
                                     android:textSize="20sp"
                                     android:textColor="@color/black"
-                                    android:text="add date @"
                                     android:gravity="left"/>
                             </LinearLayout>
                             <androidx.fragment.app.FragmentContainerView
                                 android:id="@+id/fl_map"
                                 android:layout_width="375dp"
                                 android:layout_height="400dp"
-                                android:paddingRight="20dp"
+
                                 android:layout_marginBottom="10dp"
                                 android:name="com.google.android.gms.maps.SupportMapFragment"
-
                                 app:layout_constraintHorizontal_bias="1.0"
                                 />
 
@@ -209,7 +187,7 @@
                             android:id="@+id/button_save"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Save Changes"
+                            android:text="@string/saveLabel"
                             android:layout_gravity="right" />
 
                     </LinearLayout>
@@ -221,8 +199,5 @@
         </ScrollView>
 
     </LinearLayout>
-
-
-
 
 </layout>

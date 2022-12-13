@@ -10,9 +10,11 @@ import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.model.TripElement
 import com.example.mobilesoftware.view.respository.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import kotlin.coroutines.coroutineContext
 
 /**
  * ImageViewModel stores and manage UI-related data in a lifecycle aware way. This
@@ -29,6 +31,11 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
     var trips: LiveData<List<TripElement>> = Transformations.map(tripRepository.trips){
         it.asDomainModels()
     } as MutableLiveData<List<TripElement>>
+
+    var locations: LiveData<List<Location>> = Transformations.map(imgrepository.locations){
+        it.asLocDatabaseEntities()
+    } as MutableLiveData<List<Location>>
+
     /**
      * Retrieves a single Trip Element object for the specified id
      */
@@ -40,11 +47,6 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
     var images: LiveData<List<Image>> = Transformations.map(imgrepository.images){
         it.asDomainModels(applicationContext)
     } as MutableLiveData<List<Image>>
-
-    var locations: LiveData<List<Image>> = Transformations.map(imgrepository.locations){
-        it.asLocDatabaseEntities()
-    } as MutableLiveData<List<Image>>
-
 
 
     /**
@@ -63,6 +65,16 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
         images = Transformations.map(imgrepository.images){
             it.asDomainModels(applicationContext)
         } as MutableLiveData<List<Image>>
+    }
+
+    /**
+     * Update the locations being used
+     */
+    fun getLocationsByTripID(tripID : Int) = viewModelScope.launch{
+        imgrepository.getLocationsByTripID(tripID)
+        locations = Transformations.map(imgrepository.locations){
+            it.asLocDatabaseEntities()
+        } as MutableLiveData<List<Location>>
     }
 
     /**
@@ -104,13 +116,6 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
      */
     fun delete(image: Image) = viewModelScope.launch {
         imgrepository.delete(image)
-    }
-
-    /**
-     * Update the locations being used
-     */
-    fun getLocationsByTripID(tripId: Int) = viewModelScope.launch {
-        imgrepository.getLocationsByTripID(tripId)
     }
 
 }

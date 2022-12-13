@@ -303,8 +303,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                     val weatherIcon = "https://openweathermap.org/img/wn/${parsed.weather?.get(0)?.icon}@2x.png"
                     val weather = parsed.weather?.get(0)?.main
                     val temp = "${parsed.main?.temp_min}(℃)   -   ${parsed.main?.temp_max}(℃)"
-                    Log.d("weather", "min: ${parsed.main?.temp_min}")
-                    Log.d("weather", "max: ${parsed.main?.temp_max}")
                     val avgTemp = (parsed.main?.temp_max?.minus(parsed.main?.temp_min!!))?.div(2)
                     if (weather != null) {
                         myViewModel.setWeather(weatherIcon,weather,temp)
