@@ -115,19 +115,20 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         mapFragment.getMapAsync(this)
 
 
-//        Get Temperature
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        // Get Temperature
         temperatureCallback = object : SensorEventCallback(){
             override fun onSensorChanged(event: SensorEvent?) {
                 val temperature = event?.values?.get(0)
                 myViewModel.setTemperature(temperature.toString())
             }
         }
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
-        sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
+        sensorManager.registerListener(temperatureCallback,temperatureSensor,SensorManager.SENSOR_DELAY_NORMAL)
 
 
-//        Get Pressure
+
+        // Get Pressure
         pressureCallback = object : SensorEventCallback(){
             override fun onSensorChanged(event: SensorEvent?) {
                 val pressure = event?.values?.get(0)
@@ -135,7 +136,8 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             }
         }
         pressureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
-        sensorManager.registerListener(pressureCallback,pressureSensor,20000)
+        sensorManager.registerListener(pressureCallback,pressureSensor,SensorManager.SENSOR_DELAY_NORMAL)
+
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -221,8 +223,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onResume() {
         Log.d("TripActivity", "onResume: ")
         super.onResume()
-        sensorManager.registerListener(temperatureCallback,temperatureSensor,20000)
-        sensorManager.registerListener(pressureCallback,temperatureSensor,20000)
     }
 
     override fun onDestroy() {
@@ -302,9 +302,13 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                     val parsed: Weather = gson.fromJson(response.body!!.string(), Weather::class.java)
                     val weatherIcon = "https://openweathermap.org/img/wn/${parsed.weather?.get(0)?.icon}@2x.png"
                     val weather = parsed.weather?.get(0)?.main
-                    val temp = "${parsed.main?.temp_min}(℃) - ${parsed.main?.temp_max}(℃)"
+                    val temp = "${parsed.main?.temp_min}(℃)   -   ${parsed.main?.temp_max}(℃)"
+                    Log.d("weather", "min: ${parsed.main?.temp_min}")
+                    Log.d("weather", "max: ${parsed.main?.temp_max}")
+                    val avgTemp = (parsed.main?.temp_max?.minus(parsed.main?.temp_min!!))?.div(2)
                     if (weather != null) {
                         myViewModel.setWeather(weatherIcon,weather,temp)
+                        myViewModel.temperature.set(String.format("%.2f", avgTemp))
                     }
                     val uiHandler = Handler(Looper.getMainLooper())
                     uiHandler.post(Runnable {

@@ -14,6 +14,13 @@ import com.example.mobilesoftware.view.viewmodels.NewTripViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
+/**
+ * This class has no useful logic; it's just a documentation example.
+ *
+ * @param T the type of a member in this group.
+ * @property name the name of this group.
+ * @constructor Creates an empty group.
+ */
 class NewTripActivity : AppCompatActivity() {
     var myViewModel = NewTripViewModel()
     val PERMISSION_LOCATION_GPS:Int = 1
