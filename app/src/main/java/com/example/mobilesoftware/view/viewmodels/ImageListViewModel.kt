@@ -17,7 +17,7 @@ import java.time.LocalDate
 import kotlin.coroutines.coroutineContext
 
 /**
- * ImageViewModel stores and manage UI-related data in a lifecycle aware way. This
+ * ImageListViewModel stores and manage UI-related data in a lifecycle aware way. This
  * allows data to survive configuration changes such as screen rotations. In addition, background
  * tasks can continue through configuration changes and deliver results after Fragment or Activity
  * is available.
@@ -32,6 +32,8 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
         it.asDomainModels()
     } as MutableLiveData<List<TripElement>>
 
+    // Receive the Flow of LocationEntity data from the repository, but transform to the LiveData of Locations
+    // that will be observed fom the view
     var locations: LiveData<List<Location>> = Transformations.map(imgrepository.locations){
         it.asLocDatabaseEntities()
     } as MutableLiveData<List<Location>>
@@ -68,7 +70,8 @@ class ImageListViewModel(private val imgrepository: ImageRepository,private val 
     }
 
     /**
-     * Update the locations being used
+     * Update the locations being used so it corresponds to the locations of the input trip id
+     * @return Locations of a trip
      */
     fun getLocationsByTripID(tripID : Int) = viewModelScope.launch{
         imgrepository.getLocationsByTripID(tripID)

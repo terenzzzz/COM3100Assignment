@@ -102,7 +102,7 @@ class TripListActivity : TripAppCompatActivity() {
     /**
      * Changes the preferences for TripList and then begins the function of
      * telling the view model to change how the values are sorted
-     **/
+     */
     private fun sorting(setting : Int, sharedPref: SharedPreferences){
         val editor = sharedPref.edit()
         editor.putInt("sort",setting)
