@@ -110,19 +110,19 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                             if(it != null) {
                                 val locations = it
                                 addMarkerLocation(
-                                    locations[0].longitude.toDouble(),
                                     locations[0].latitude.toDouble(),
+                                    locations[0].longitude.toDouble(),
                                     "start"
                                 )
                                 addMarkerLocation(
-                                    locations[locations.size - 1].longitude.toDouble(),
                                     locations[locations.size - 1].latitude.toDouble(),
+                                    locations[locations.size - 1].longitude.toDouble(),
                                     "end"
                                 )
                                 for (location in 1..locations.size - 2) {
                                     addMarkerLocation(
-                                        locations[location].longitude.toDouble(),
                                         locations[location].latitude.toDouble(),
+                                        locations[location].longitude.toDouble(),
                                         "middle"
                                     )
                                 }

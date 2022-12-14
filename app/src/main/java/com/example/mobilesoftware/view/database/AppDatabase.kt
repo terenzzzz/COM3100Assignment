@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [ImageEntity::class,TripEntity::class,LocationEntity::class], version = 13, exportSchema = false)
+@Database(entities = [ImageEntity::class,TripEntity::class,LocationEntity::class], version = 16, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun imageDao(): ImageDao
