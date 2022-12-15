@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -19,7 +20,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ServiceCompat.stopForeground
+import androidx.lifecycle.ViewModelProvider
 import com.example.mobilesoftware.R
 import com.example.mobilesoftware.databinding.ActivityTripBinding
 import com.example.mobilesoftware.view.dataParse.Weather
@@ -39,7 +40,7 @@ import java.util.*
 
 class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
-    var myViewModel = TripViewModel()
+    private lateinit var myViewModel:TripViewModel
     private lateinit var mMap: GoogleMap
     private val client = OkHttpClient()
     private lateinit var binding: ActivityTripBinding
@@ -60,14 +61,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     private lateinit var pressureCallback: SensorEventCallback
     private var tripID: Int = -1
 
-
-    companion object {
-        fun startFn(context: Context) {
-            val intent =
-                Intent(context, TripActivity::class.java)
-            context.startActivity(intent)
-        }
-    }
 
     val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         it?.let{ uri ->
@@ -91,10 +84,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("TripActivity", "onCreate: ")
         super.onCreate(savedInstanceState)
 
         binding = ActivityTripBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        myViewModel = ViewModelProvider(this)[TripViewModel::class.java]
         binding.viewModel = myViewModel
 
 
@@ -107,6 +102,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         val title = intent.getStringExtra("title")
         val startTime = intent.getStringExtra("time")
         myViewModel.init(title,startTime)
+
 
         //        Add map
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -141,10 +137,11 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                // Update the UI
+                // Get location from service
                 val latitude = intent.getStringExtra("latitude")
                 val longitude = intent.getStringExtra("longitude")
-                val location = Location("providerName")
+                // Instantiate Location
+                val location = Location("Location")
                 if (latitude != null) {
                     location.latitude = latitude.toDouble()
                 }
@@ -152,21 +149,23 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                     location.longitude = longitude.toDouble()
                 }
 
+
+                // Update Path and Current Location
                 if (lastLocation != null){
                     drawLine(lastLocation!!,location)
                     addDot(location.latitude,location.longitude)
                 }else{
-                    lastLocation = location
-                    getWeather(lastLocation!!.latitude, lastLocation!!.longitude)
-                    addMarker(lastLocation!!.latitude, lastLocation!!.longitude)
-                    addDot(lastLocation!!.latitude, lastLocation!!.longitude)
+                    // Init Start Point
+                    myViewModel.startLocation.set(location)
+                    getWeather(location!!.latitude, location!!.longitude)
+                    addMarker(location!!.latitude, location!!.longitude)
+                    addDot(location!!.latitude, location!!.longitude)
                 }
                 lastLocation = location
                 myViewModel.setLocation(lastLocation!!.latitude.toString(), lastLocation!!.longitude.toString())
                 myViewModel.insertLocation(lastLocation!!.latitude.toString(), lastLocation!!.longitude.toString())
 
                 Log.d("TripActivity", "latitude: $latitude, longitude: $longitude")
-                // Use the data to update the UI
             }
         }
 
@@ -185,6 +184,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
         binding.backIcon.setOnClickListener { view ->
             stopService()
+            unregisterReceiver(receiver)
             NewTripActivity.startFn(this)
             finish()
         }
@@ -206,7 +206,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
         binding.stop.setOnClickListener {
             stopService()
-
+            unregisterReceiver(receiver)
             myViewModel.returnTitle()
                 ?.let { myViewModel.insertTrip(it,myViewModel.returnStartTime(),myViewModel.returnDuration().toString()) }
             TripListActivity.startFn(this)
@@ -215,6 +215,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     }
 
     override fun onPause() {
+        Log.d("TripActivity", "onPause: ")
         super.onPause()
         sensorManager.unregisterListener(temperatureCallback)
         sensorManager.unregisterListener(pressureCallback)
@@ -228,7 +229,8 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onDestroy() {
         Log.d("TripActivity", "onDestroy: ")
         super.onDestroy()
-        unregisterReceiver(receiver)
+//        stopService()
+//        unregisterReceiver(receiver)
     }
 
 

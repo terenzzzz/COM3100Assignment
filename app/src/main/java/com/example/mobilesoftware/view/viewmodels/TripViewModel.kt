@@ -36,6 +36,7 @@ class TripViewModel : ViewModel() {
     var pressure: ObservableField<String> = ObservableField()
     var latitude: ObservableField<String> = ObservableField()
     var longitude: ObservableField<String> = ObservableField()
+    var startLocation: ObservableField<android.location.Location> = ObservableField()
     var tripID : Int = -1
     var imgIDs : MutableList<Int> = arrayListOf()
     var locIDs : MutableList<Int> = arrayListOf()

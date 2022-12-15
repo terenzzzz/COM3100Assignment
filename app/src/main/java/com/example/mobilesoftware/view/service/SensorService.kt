@@ -20,16 +20,22 @@ import com.example.mobilesoftware.R
 import com.example.mobilesoftware.view.view.TripActivity
 import com.google.android.gms.location.*
 
+/**
+ * This is a Service class to implement the Foreground Service for keep tracking location
+ * @author Zhicong Jiang
+ * @return This function returns a service to get location from GPS sensor.
+ */
 class SensorService : LifecycleService() {
     private val CHANNEL_ID = "notification channel id"
-    private var number = 0
-
     private lateinit var lastLocation: Location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 
+    /**
+     * onCreate lifecycle to create a Foreground Service
+     */
     override fun onCreate() {
-        Log.d("service", "onCreate: ")
+        Log.d("Service", "onCreate: ")
         super.onCreate()
         createChannel()
         val pendingIntent = createPendingIntent()
@@ -37,9 +43,19 @@ class SensorService : LifecycleService() {
         startForeground(1, notification)
     }
 
+    /**
+     * onStartCommand lifecycle to start the Service
+     *
+     * @author Zhicong Jiang
+     *
+     * @param intent contains the data passed to the service when it was started
+     * @param flags  an integer value that used to provide additional information about how the service was started.
+     * @param startId an integer value that uniquely identifies the start request for the service
+     *
+     * @return an integer value indicating to the system how it should continue executing the Service
+     */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("service", "onStartCommand: Called")
-
+        Log.d("Service", "onStartCommand: ")
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 p0?:return
@@ -54,28 +70,31 @@ class SensorService : LifecycleService() {
             }
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        Log.d("service", "fusedLocationClient: init")
-
-
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             var locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,
                 10000
             ).build()
-            Log.d("service", "fusedLocationClient: requestLocationUpdates")
             fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback, Looper.getMainLooper())
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
-        Log.d("service", "onDestroy: ")
+        Log.d("Service", "onDestroy: ")
         super.onDestroy()
+        stopSelf()
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
+    /**
+     * A function to Create Pending Intent for creating notification for Foreground Service
+     *
+     * @return a pendingIntent object
+     */
     private fun createPendingIntent(): PendingIntent? {
+        Log.d("Service", "createPendingIntent: ")
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
@@ -85,9 +104,17 @@ class SensorService : LifecycleService() {
         return pendingIntent
     }
 
+    /**
+     * A function to Create notification for Foreground Service
+     *
+     * @param pendingIntent
+     *
+     * @return a pendingIntent object
+     */
     private fun createNotification(pendingIntent: PendingIntent): Notification {
+        Log.d("Service", "createNotification: ")
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.drawable.gps)
             .setContentTitle("We are keep tracking your location...")
             .setContentText("Click here to come back")
             .setContentIntent(pendingIntent)
@@ -95,14 +122,16 @@ class SensorService : LifecycleService() {
         return notification
     }
 
+    /**
+     * A function to Create the NotificationChannel
+     */
     private fun createChannel() {
+        Log.d("Service", "createChannel: ")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
             val name = "Notification Channel Name"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
         }
