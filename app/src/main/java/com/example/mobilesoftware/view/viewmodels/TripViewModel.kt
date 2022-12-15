@@ -127,7 +127,7 @@ class TripViewModel : ViewModel() {
         }
     }
 
-    fun insertLocation(longitude: String,latitude: String){
+    fun insertLocation(latitude: String,longitude: String){
         viewModelScope.launch {
             val id = tripRepository.insertLocation(
                 Location(

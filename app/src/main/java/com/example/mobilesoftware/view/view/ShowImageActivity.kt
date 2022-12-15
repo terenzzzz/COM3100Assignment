@@ -1,15 +1,11 @@
 package com.example.mobilesoftware.view.view
 
-
-
 import android.content.ContentUris
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
 import com.example.mobilesoftware.databinding.ActivityShowImageBinding
 import com.example.mobilesoftware.view.ImageAppCompatActivity
@@ -19,31 +15,20 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.mobilesoftware.R
-import com.example.mobilesoftware.view.model.Location
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.flow.Flow
-import java.util.*
-import kotlin.concurrent.schedule
+
 
 class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityShowImageBinding
     private lateinit var mMap: GoogleMap
-    //var myViewModel: ShowImageViewModel()
 
-    // This class didn't change so much as the other classes serve to show the examples intended well enough
-    // Still, you should pay attention to the relevant changes.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityShowImageBinding.inflate(layoutInflater)
@@ -53,8 +38,10 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         // along with the intent.
         val bundle: Bundle? = intent.extras
 
+        //add the map when it is ready to add
         val mapFragment = supportFragmentManager.findFragmentById(R.id.fl_map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
         if (bundle!= null) {
             val imageId = bundle.getInt("id")
             val position = bundle.getInt("position")
@@ -62,13 +49,14 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
 
             if (imageId > 0) {
                 // Observe the image data, only one will be receive
-                imageViewModel.getLocationsByTripID(tripId)
+                imageViewModel.getLocationsByTripID(tripId) //filtering locations for the current trip only
+                //Observe image meta data
                 imageViewModel.getImage(imageId).observe(this){
                     if(it != null){
                         val image = it
                         loadImageView(image.imagePath.toString())
+                        //bind image title and description to view
                         binding.editTextTitle.setText(image.title)
-
                         image.description?.isNotEmpty().apply {
                             binding.editTextDescription.setText(image.description)
                         }
@@ -81,48 +69,53 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
                         trip.observe(this){
                             if(it !=null){
                                 val theTrip= it
+                                //bind the trip title to the view
                                 binding.tripTitle.text=theTrip.title
                             }
 
                         }
+                        //bind date,pressure, temperature to view
                         binding.pressure.text = image.pressure+ " hPa"
                         binding.temperature.text=image.temperature+ " \u2103"
                         binding.date.text=image.date.toString()
-
                         imageViewModel.filter(image.tripID!!,0)
-
-                        // start observing the date from the ViewModel
+                        // start observing the other images on the trip from the ViewModel
                         imageViewModel.images.observe(this) {
                             if(it != null){
                                 val theImages= it
                                 for (image in theImages){
                                     if (image.id==imageId){
+                                        //add marker for current image
                                     addMarkerCurrent(image.latitude!!.toDouble(),image.longitude!!.toDouble())
                                     }
                                     else{
+                                        //add marker of different colour for other images on the trip
                                         addMarker(image.latitude!!.toDouble(),image.longitude!!.toDouble(),image.title)
                                     }
                                 }
                             }
                         }
-
+                        // start observing the locations on the trip from the ViewModel
                         imageViewModel.locations.observe(this) {
                             if(it != null) {
                                 val locations = it
+                                //add green dot marker to start of the path
                                 addMarkerLocation(
-                                    locations[0].longitude.toDouble(),
                                     locations[0].latitude.toDouble(),
+                                    locations[0].longitude.toDouble(),
                                     "start"
                                 )
+                                //add red dot marker to the end of the path
                                 addMarkerLocation(
-                                    locations[locations.size - 1].longitude.toDouble(),
                                     locations[locations.size - 1].latitude.toDouble(),
+                                    locations[locations.size - 1].longitude.toDouble(),
                                     "end"
                                 )
+                                //blue dot marker for all locations between the start and end
                                 for (location in 1..locations.size - 2) {
                                     addMarkerLocation(
-                                        locations[location].longitude.toDouble(),
                                         locations[location].latitude.toDouble(),
+                                        locations[location].longitude.toDouble(),
                                         "middle"
                                     )
                                 }
@@ -134,24 +127,34 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
+    /**
+     * Initialises the google map
+     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
     }
-
+    /**
+     * Function that adds a dot marker to the map for the GPS location provided
+     * A red, green or blue marker on google map depending on start, end or other type of location
+     */
     private fun addMarkerLocation(latitude:Double,longitude:Double,type:String) {
         val point = LatLng(latitude, longitude)
+        //green dot for start location of the trip
         if (type == "start") {
             mMap.addMarker(
                 MarkerOptions().position(point)
                     .icon(BitmapDescriptorFactory.fromResource((R.drawable.green_dot)))
             )
         }
+        //red dot for end location of the trip
         else if (type=="end"){
             mMap.addMarker(
                 MarkerOptions().position(point)
                     .icon(BitmapDescriptorFactory.fromResource((R.drawable.red_dot)))
             )
         }
+        //blue dot for any location in between the start and end location
         else{
             mMap.addMarker(
                 MarkerOptions().position(point)
@@ -161,12 +164,21 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         }
 
     }
+
+    /**
+     * Function that adds a green location marker to the map for the GPS location provided.
+     * The marker is currently used for other images on the same path when displaying image details
+     */
     private fun addMarker(latitude:Double,longitude:Double,imageTitle:String){
         val point = LatLng(latitude, longitude)
         mMap.addMarker(MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(imageTitle))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
 
+    /**
+     * Function that adds a red location marker to the map for the GPS location provided.
+     * The marker is currently used to mark the location of the selected image on the path when displaying image details
+     */
     private fun addMarkerCurrent(latitude:Double,longitude:Double){
         val point = LatLng(latitude, longitude)
         mMap.addMarker(MarkerOptions().position(point).title("This Image"))
@@ -242,7 +254,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
             binding.image.setImageURI(current_access_uri)
         }
     }
-
+    //Listener for the save changes button, saves the updated title and/or description.
     private fun onUpdateButtonClickListener(view: View, image: Image, position: Int){
         image.title = binding.editTextTitle.text.toString()
         image.description = binding.editTextDescription.text.toString()
@@ -254,7 +266,7 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         setResult(RESULT_OK,intent)
         finish()
     }
-
+    //delete button has since been removed, code is useful below if the delete button is added to the app in the future.
     private fun onDeleteButtonClickListener(view: View, image: Image, position: Int){
         image.deleteThumbnail(this@ShowImageActivity)
         imageViewModel.delete(image)
@@ -266,6 +278,5 @@ class   ShowImageActivity  : ImageAppCompatActivity(), OnMapReadyCallback {
         setResult(RESULT_OK,intent)
         finish()
 
-        // Start an intent to let the calling activity know a delete has happened.
     }
 }
