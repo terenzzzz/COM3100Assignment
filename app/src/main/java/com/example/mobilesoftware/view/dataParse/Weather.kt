@@ -1,5 +1,9 @@
 package com.example.mobilesoftware.view.dataParse
 
+
+/**
+ * A class to parse JSON for weather http request
+ */
 class Weather {
     var coord: CoordDTO? = null
     var weather: List<WeatherDTO>? = null

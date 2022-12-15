@@ -37,7 +37,9 @@ import okhttp3.*
 import java.io.IOException
 import java.util.*
 
-
+/**
+ * An Activity class to handle the view during the trip
+ */
 class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private lateinit var myViewModel:TripViewModel
@@ -53,7 +55,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     // Broadcast
     private lateinit var receiver: BroadcastReceiver
 
-//    temperature & pressure
+    // Temperature & Pressure
     private lateinit var sensorManager: SensorManager
     private var temperatureSensor: Sensor?=null
     private lateinit var temperatureCallback: SensorEventCallback
@@ -98,21 +100,21 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             callService()
         }
 
-        //        Set data
+        // Get data from newTrip activity and update viewModel
         val title = intent.getStringExtra("title")
         val startTime = intent.getStringExtra("time")
         myViewModel.init(title,startTime)
 
 
-        //        Add map
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        // Adding map to the view
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
+        // Init sensorManager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        // Get Temperature
+
+        // Handle Temperature update
         temperatureCallback = object : SensorEventCallback(){
             override fun onSensorChanged(event: SensorEvent?) {
                 val temperature = event?.values?.get(0)
@@ -122,9 +124,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
         sensorManager.registerListener(temperatureCallback,temperatureSensor,SensorManager.SENSOR_DELAY_NORMAL)
 
-
-
-        // Get Pressure
+        // Handle Pressure update
         pressureCallback = object : SensorEventCallback(){
             override fun onSensorChanged(event: SensorEvent?) {
                 val pressure = event?.values?.get(0)
@@ -134,7 +134,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         pressureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
         sensorManager.registerListener(pressureCallback,pressureSensor,SensorManager.SENSOR_DELAY_NORMAL)
 
-
+        // Receive Location value from Service and update UI
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 // Get location from service
@@ -148,7 +148,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                 if (longitude != null) {
                     location.longitude = longitude.toDouble()
                 }
-
 
                 // Update Path and Current Location
                 if (lastLocation != null){
@@ -168,11 +167,10 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                 Log.d("TripActivity", "latitude: $latitude, longitude: $longitude")
             }
         }
-
         val filter = IntentFilter("update-ui")
         registerReceiver(receiver, filter)
 
-
+        // Keep update the timer every second
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 myViewModel.setCurrentTime()
@@ -182,9 +180,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             }
         }, 0,1000)
 
+        // Handle backIcon
         binding.backIcon.setOnClickListener { view ->
-            stopService()
-            unregisterReceiver(receiver)
+//            stopService()
+//            unregisterReceiver(receiver)
+            sensorManager.unregisterListener(temperatureCallback)
+            sensorManager.unregisterListener(pressureCallback)
             NewTripActivity.startFn(this)
             finish()
         }
@@ -199,14 +200,15 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             binding.takePic.visibility = View.INVISIBLE
         }
 
+        // Handle uploadPic button
         binding.uploadPic.setOnClickListener {
             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-
+        // Handle stop button
         binding.stop.setOnClickListener {
-            stopService()
-            unregisterReceiver(receiver)
+//            stopService()
+//            unregisterReceiver(receiver)
             myViewModel.returnTitle()
                 ?.let { myViewModel.insertTrip(it,myViewModel.returnStartTime(),myViewModel.returnDuration().toString()) }
             TripListActivity.startFn(this)
@@ -217,8 +219,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onPause() {
         Log.d("TripActivity", "onPause: ")
         super.onPause()
-        sensorManager.unregisterListener(temperatureCallback)
-        sensorManager.unregisterListener(pressureCallback)
     }
 
     override fun onResume() {
@@ -229,21 +229,33 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
     override fun onDestroy() {
         Log.d("TripActivity", "onDestroy: ")
         super.onDestroy()
-//        stopService()
-//        unregisterReceiver(receiver)
+        stopService()
+        unregisterReceiver(receiver)
+        sensorManager.unregisterListener(temperatureCallback)
+        sensorManager.unregisterListener(pressureCallback)
     }
 
-
+    /**
+     * called when a map has been successfully loaded and is ready to be used
+     *
+     * @param googleMap
+     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
     }
 
+    /**
+     * function to call the Location Service to start
+     */
     private fun callService(){
         Intent(this, SensorService::class.java).apply {
             startService(this)
         }
     }
 
+    /**
+     * function to stop Service when is no longer needed
+     */
     private fun stopService(){
         Intent(this, SensorService::class.java).apply {
             stopService(this)
@@ -251,12 +263,24 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
 
     }
 
+    /**
+     * function to add marker for start point in the map
+     *
+     * @param latitude of the location
+     * @param longitude of the location
+     */
     private fun addMarker(latitude:Double,longitude:Double){
         val point = LatLng(latitude, longitude)
         mMap.addMarker(MarkerOptions().position(point))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
 
+    /**
+     * function to add marker for pictures in the map
+     *
+     * @param latitude of the location
+     * @param longitude of the location
+     */
     private fun addPicMarker(latitude:Double,longitude:Double){
         val point = LatLng(latitude, longitude)
 
@@ -267,6 +291,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
 
+    /**
+     * function to update current location representation
+     *
+     * @param latitude of the location
+     * @param longitude of the location
+     */
     private fun addDot(latitude:Double,longitude:Double){
         headMarker?.remove()
 
@@ -278,6 +308,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15f))
     }
 
+    /**
+     * function to draw line between two location
+     *
+     * @param startLocation
+     * @param endLocation
+     */
     private fun drawLine(startLocation:Location,endLocation:Location){
         mMap.addPolyline(
         PolylineOptions()
@@ -286,6 +322,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
         )
     }
 
+    /**
+     * An Asynchronous http Request function for weather
+     *
+     * @param startLocation
+     * @param endLocation
+     */
     private fun getWeather(latitude:Double,longitude:Double){
         var url = "https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=bb01585d3dafe1d3b04332150c924d32&units=metric"
         val request = Request.Builder()
@@ -300,7 +342,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
             override fun onResponse(call: Call, response: Response) {
                 response.use {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    val gson = Gson() // Or use new GsonBuilder().create();
+                    val gson = Gson()
                     val parsed: Weather = gson.fromJson(response.body!!.string(), Weather::class.java)
                     val weatherIcon = "https://openweathermap.org/img/wn/${parsed.weather?.get(0)?.icon}@2x.png"
                     val weather = parsed.weather?.get(0)?.main
@@ -317,13 +359,8 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback{
                             .fit()
                             .into(binding.weatherIcon)
                     })
-
                 }
             }
         })
     }
-
-
-
-
 }

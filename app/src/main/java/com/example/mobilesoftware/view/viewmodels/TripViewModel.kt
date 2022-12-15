@@ -6,7 +6,6 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobilesoftware.view.ImageApplication
-import com.example.mobilesoftware.view.database.ImageEntity
 import com.example.mobilesoftware.view.model.Image
 import com.example.mobilesoftware.view.model.Location
 import com.example.mobilesoftware.view.model.Trip
@@ -153,7 +152,5 @@ class TripViewModel : ViewModel() {
             assignTripId(tripRepository.insert(title,date, time))
         }
     }
-
-
 
 }

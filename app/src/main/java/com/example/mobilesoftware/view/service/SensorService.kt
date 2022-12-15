@@ -22,7 +22,7 @@ import com.google.android.gms.location.*
 
 /**
  * This is a Service class to implement the Foreground Service for keep tracking location
- * @author Zhicong Jiang
+ *
  * @return This function returns a service to get location from GPS sensor.
  */
 class SensorService : LifecycleService() {
@@ -45,8 +45,6 @@ class SensorService : LifecycleService() {
 
     /**
      * onStartCommand lifecycle to start the Service
-     *
-     * @author Zhicong Jiang
      *
      * @param intent contains the data passed to the service when it was started
      * @param flags  an integer value that used to provide additional information about how the service was started.

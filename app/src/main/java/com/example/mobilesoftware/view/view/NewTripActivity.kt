@@ -15,17 +15,18 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 /**
- * This class has no useful logic; it's just a documentation example.
- *
- * @param T the type of a member in this group.
- * @property name the name of this group.
- * @constructor Creates an empty group.
+ * An activity to handle new trip view
  */
 class NewTripActivity : AppCompatActivity() {
     var myViewModel = NewTripViewModel()
     val PERMISSION_LOCATION_GPS:Int = 1
 
     companion object {
+        /**
+         * Function to redirect to Activity
+         *
+         * @param context of origin activity
+         */
         fun startFn(context: Context) {
             val intent =
                 Intent(context, NewTripActivity::class.java)
@@ -40,7 +41,7 @@ class NewTripActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.viewModel = myViewModel
 
-        // Permissiont request
+        // Permission request
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -48,13 +49,14 @@ class NewTripActivity : AppCompatActivity() {
             )
         }
 
-
+        // keep update timer
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 myViewModel.init()
             }
         }, 0,1000)
 
+        // handle start button
         binding.start.setOnClickListener(View.OnClickListener { view ->
             // Do some work here
             val title = binding.etTitle.text.toString()
@@ -74,6 +76,7 @@ class NewTripActivity : AppCompatActivity() {
 
         })
 
+        // handle back button
         binding.backIcon.setOnClickListener { view ->
             TripListActivity.startFn(this)
             finish()
