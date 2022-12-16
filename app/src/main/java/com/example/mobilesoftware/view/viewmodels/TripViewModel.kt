@@ -17,6 +17,10 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+/**
+ * ViewModel for the Trip acitviity which handles the process
+ * for tracking a trip etc.
+ */
 
 class TripViewModel : ViewModel() {
     private var model: Trip = Trip()
@@ -36,6 +40,15 @@ class TripViewModel : ViewModel() {
     var latitude: ObservableField<String> = ObservableField()
     var longitude: ObservableField<String> = ObservableField()
     var startLocation: ObservableField<android.location.Location> = ObservableField()
+
+    /**
+     * Trip ID is initially -1 as the TRIP id is not given until in is entered into the database
+     * which is done when the trip is finally stopped.
+     *
+     * For this reason image id's and locations id's are kept track of as they are inserted into
+     * the database and then at the end of this section of code the ID's are assigned the corrent
+     * TRIP id using SQL queries
+     */
     var tripID : Int = -1
     var imgIDs : MutableList<Int> = arrayListOf()
     var locIDs : MutableList<Int> = arrayListOf()
@@ -108,7 +121,7 @@ class TripViewModel : ViewModel() {
         return this.title.get()
     }
 
-
+    // Creates an image item and inserts in the viewmodelscope to not use the main thread
     fun insertimage(image: Uri){
         viewModelScope.launch {
             val id = imageRepository.insert(
@@ -126,6 +139,7 @@ class TripViewModel : ViewModel() {
         }
     }
 
+    // Creates an locations item and inserts in the viewmodelscope to not use the main thread
     fun insertLocation(latitude: String,longitude: String){
         viewModelScope.launch {
             val id = tripRepository.insertLocation(
@@ -137,6 +151,11 @@ class TripViewModel : ViewModel() {
             locIDs.add(id)
         }
     }
+
+    /**
+     * These functions are responsible for giving the images
+     * and locations the correct trip ID
+     */
 
     suspend fun assignTripId(tID : Int){
         for (v in imgIDs){

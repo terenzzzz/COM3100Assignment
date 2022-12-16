@@ -21,6 +21,13 @@ import com.example.mobilesoftware.view.ImageAppCompatActivity
 import com.example.mobilesoftware.view.model.Image
 import com.google.android.material.snackbar.Snackbar
 
+/**
+ * Activity for the portion of the app that displays the images
+ * in a grid, this used potential tripID intent to display certain
+ * images or all images
+ */
+
+
 // Note the use of ImageAppCompatActivity - which is a custom class that simply inherits
 // the Android AppCompatActivity class and provides the ImageViewModel as a property (DRY)
 class ImageListActivity : ImageAppCompatActivity() {
@@ -53,7 +60,6 @@ class ImageListActivity : ImageAppCompatActivity() {
         // Checks for sorting preference
         val sharedPref = this@ImageListActivity.getPreferences(Context.MODE_PRIVATE)
         val sortByDateSwitch : SwitchCompat = findViewById(R.id.switch1)
-
         if(sharedPref.getInt("sort",0) == 1){
             sortByDateSwitch.isChecked = true
             sortByDateSwitch.text = "Sorted by oldest"

@@ -2,6 +2,11 @@ package com.example.mobilesoftware.view.model
 
 import java.time.LocalDate
 
+/**
+ * Data class that TripEntities from database are
+ * transformed into to be used in the app
+ */
+
 data class TripElement(
     val id : Int = 0,
     val title : String,

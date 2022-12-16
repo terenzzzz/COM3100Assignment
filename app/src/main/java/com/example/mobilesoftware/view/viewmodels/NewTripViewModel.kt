@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+/**
+ * ViewModel for the NewTrip activity
+ */
 
 class NewTripViewModel : ViewModel() {
 

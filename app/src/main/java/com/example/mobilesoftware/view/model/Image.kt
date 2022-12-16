@@ -3,6 +3,11 @@ package com.example.mobilesoftware.view.model
 import android.net.Uri
 import java.time.LocalDate
 
+/**
+ * Data class that ImageEntities from database are
+ * transformed into to be used in the app
+ */
+
 data class Image(
     val id: Int = 0,
     val imagePath: Uri,

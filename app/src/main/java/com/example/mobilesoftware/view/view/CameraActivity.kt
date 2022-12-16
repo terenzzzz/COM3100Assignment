@@ -28,14 +28,7 @@ class CameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-//        if (!allPermissionsGranted()) {
-//            ActivityCompat.requestPermissions(
-//                this, MainActivity.REQUIRED_PERMISSIONS, MainActivity.REQUEST_CODE_PERMISSIONS
-//            )
-//        }else{
         startCamera()
-//        }
-
 
         // Set up the listeners for take photo and video capture buttons
         imageCaptureButton = findViewById(R.id.image_capture_button)

@@ -24,12 +24,16 @@ import java.time.LocalDate
  * both very related
  */
 class TripRepository(private val tripDao: TripDao,private val locationDao: LocationDao) {
-    // The ViewModel will observe this Flow
-    // Room will handle executing this on a thread
+
+    // FLow of trip data
     var trips: LiveData<List<TripEntity>> = tripDao.getTrips().asLiveData()
+
+    // Retrieve specific trip
     fun getTrip(id: Int) : LiveData<TripEntity>{
         return tripDao.getTrip(id).asLiveData()
     }
+
+    // Sort based on users preference given by viewmodel/view
     fun sorting(setting : Int){
         trips = if(setting == 1){
             tripDao.getTripsDesc().asLiveData()
@@ -43,12 +47,6 @@ class TripRepository(private val tripDao: TripDao,private val locationDao: Locat
         tripDao.insert(trip.asDatabaseEntity())
     }
 
-    /**
-     * The insert version used when a user selects an image using the photo picker
-     * or from camera. This is better than using the initNewImageData() function
-     * in the previous implementation as there is no need to write boiler plate
-     * code to retrieve teh data again after saving it.
-     */
     suspend fun insert(
         title: String,
         date: LocalDate,
@@ -81,8 +79,10 @@ class TripRepository(private val tripDao: TripDao,private val locationDao: Locat
 
 
 /***
- * Function to map Trip database entities to the domain model
+ * Functions to map database entities to the domain model and vice verse
+ * for Trips and Locations
  */
+
 fun TripEntity.asDomainModel(): TripElement {
     return TripElement(
         id = id,
@@ -104,9 +104,7 @@ fun List<TripEntity>.asDomainModels(): List<TripElement>{
     }
 }
 
-/**
- * The versions of the above functions that handles a collection
- */
+
 fun TripElement.asDatabaseEntity(): TripEntity{
     return TripEntity(
         id = id,
@@ -127,9 +125,6 @@ fun List<TripElement>.asDatabaseEntities(): List<TripEntity>{
     }
 }
 
-/**
- * The versions of the above functions that handles a collection
- */
 fun Location.asDatabaseEntity(): LocationEntity{
     return LocationEntity(
         id = id,

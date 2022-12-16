@@ -28,7 +28,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 /**
  * TripListAcitvity uses TripAppCompatAcitvity in order to inherit the functionality of its
  * related repistory and conects the acitivty to its related ViewModel in a simpler manner
+ *
+ * This portion of code handles the opening page which displays the Trips held in the
+ * database to be inspected.
  */
+
 class TripListActivity : TripAppCompatActivity() {
     private val NUMBER_OF_COLUMNS = 1
     private lateinit var recyclerView: RecyclerView

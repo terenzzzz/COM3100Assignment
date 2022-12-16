@@ -29,16 +29,19 @@ import kotlin.coroutines.coroutineContext
  */
 class ImageRepository(private val imageDao: ImageDao,private val locationDao: LocationDao) {
 
-    // The ViewModel will observe this Flow
-    // Room will handle executing this on a thread
+    //Flow of Images and locations data to be used by viewmodels
     var images: LiveData<List<ImageEntity>> = imageDao.getImages().asLiveData()
 
     var locations: LiveData<List<LocationEntity>> = locationDao.getLocationsByTripID(-1).asLiveData()
 
+    //Retrieve a single image from databse
     fun getImage(id: Int) : LiveData<ImageEntity>{
         return imageDao.getImage(id).asLiveData()
     }
 
+    /**
+     * Filters the flow of the data to the preference specificed by the user
+     */
     fun filter(tripID : Int,setting: Int){
         if(tripID == -1){
             if(setting == 0){
@@ -58,7 +61,6 @@ class ImageRepository(private val imageDao: ImageDao,private val locationDao: Lo
     /**
      * Function to get all locations relating to the tripID entered for the show image activity
      */
-
     fun getLocationsByTripID(tid: Int){
         locations = locationDao.getLocationsByTripID(tid).asLiveData()
     }
@@ -91,14 +93,17 @@ class ImageRepository(private val imageDao: ImageDao,private val locationDao: Lo
         imageDao.insert(image.asDatabaseEntity())
     }
 
+    // Update TRIPID of images
     suspend fun updateTripID(iid: Int, tid: Int){
         imageDao.updateTripID(iid,tid)
     }
 
+    // Update whole image
     suspend fun update(image: Image){
         imageDao.update(image.asDatabaseEntity())
     }
 
+    // Delete image
     suspend fun delete(image: Image){
         imageDao.delete(image.asDatabaseEntity())
     }
@@ -108,12 +113,8 @@ class ImageRepository(private val imageDao: ImageDao,private val locationDao: Lo
 
 
 /***
- * Function to map database entities to the domain model
- *
- *  Easier to appropriate the importance of this when you consider the fact
- * that the domain model may need to represent other properties and methods
- * which do not need to be present in the entity representation. In this particular implementation
- * they match exactly, but the implementation is ready if they start to diverge
+ * Functions to map database entities to the domain model and vice verse
+ * for Images and Locations
  */
 fun ImageEntity.asDomainModel(context: Context): Image {
     val img = Image(
@@ -152,9 +153,6 @@ fun List<ImageEntity>.asDomainModels(context: Context): List<Image>{
     }
 }
 
-/**
- * The version of the above function that handles a collection
- */
 fun Image.asDatabaseEntity(): ImageEntity{
     return ImageEntity(
         id = id,
@@ -172,9 +170,6 @@ fun Image.asDatabaseEntity(): ImageEntity{
     )
 }
 
-/**
- * The version of the above function that handles a collection
- */
 fun List<Image>.asDatabaseEntities(): List<ImageEntity>{
     return map{
         ImageEntity(
@@ -193,6 +188,8 @@ fun List<Image>.asDatabaseEntities(): List<ImageEntity>{
         )
     }
 }
+
+
 
 fun LocationEntity.asLocDatabaseEntity(): Location{
     return Location(
